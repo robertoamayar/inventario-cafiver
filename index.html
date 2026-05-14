@@ -240,6 +240,31 @@ tr:hover td{background:#f7f9ff;}
   .tnav{padding:6px 10px;}
 }
 
+
+/* ANTIGÜEDAD / SEMÁFORO */
+.vida-dot{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;}
+.vida-verde{background:#e6f4ea;color:#2e7d32;}
+.vida-amarillo{background:#fff8e1;color:#f57f17;}
+.vida-rojo{background:#fce8e6;color:#c62828;}
+tr.row-rojo td{background:#fff5f5!important;}
+tr.row-rojo:hover td{background:#fce8e6!important;}
+tr.row-amarillo td{background:#fffbf0!important;}
+tr.row-amarillo:hover td{background:#fff3cd!important;}
+
+/* TRANSFERENCIA */
+.transfer-modal{position:fixed;inset:0;background:rgba(15,20,35,.5);display:flex;align-items:center;justify-content:center;z-index:500;padding:20px;backdrop-filter:blur(2px);}
+.transfer-card{background:#fff;border-radius:16px;width:100%;max-width:480px;box-shadow:0 16px 48px rgba(0,0,0,.22);}
+
+/* HISTORIAL ASIGNACIONES */
+.asign-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid #f0f2f5;}
+.asign-item:last-child{border-bottom:none;}
+.asign-dot{width:10px;height:10px;border-radius:50%;background:#e0e2e6;flex-shrink:0;margin-top:4px;}
+.asign-dot.active{background:#34a853;}
+.asign-info{flex:1;}
+.asign-name{font-size:13px;font-weight:600;color:#1c1e21;}
+.asign-meta{font-size:11px;color:#9aa0a6;margin-top:1px;}
+.asign-motivo{font-size:11px;color:#5f6368;margin-top:2px;}
+
 </style>
 </head>
 <body>
@@ -327,7 +352,8 @@ tr:hover td{background:#f7f9ff;}
     <button class="dp-tab on" id="dpt-info"      onclick="dpTab('info')">Información</button>
     <button class="dp-tab"    id="dpt-red"       onclick="dpTab('red')">Red</button>
     <button class="dp-tab"    id="dpt-compra"    onclick="dpTab('compra')">Compra</button>
-    <button class="dp-tab"    id="dpt-historial" onclick="dpTab('historial')">Historial</button>
+    <button class="dp-tab"    id="dpt-historial"    onclick="dpTab('historial')">Historial</button>
+    <button class="dp-tab"    id="dpt-asignaciones" onclick="dpTab('asignaciones')">👤 Asignaciones</button>
   </div>
   <div class="dp-body" id="dp-body"></div>
 </div>
@@ -415,6 +441,42 @@ tr:hover td{background:#f7f9ff;}
     <div class="modal-footer">
       <button class="btn" onclick="closeFormEquipo()">Cancelar</button>
       <button class="btn btn-blue" onclick="saveEquipo()">💾 Guardar equipo</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- MODAL TRANSFERENCIA -->
+<div id="overlay-transfer" style="display:none;" class="transfer-modal" onclick="if(event.target===this)closeTransfer()">
+  <div class="transfer-card">
+    <div class="modal-hd">
+      <h3>🔄 Transferir equipo</h3>
+      <button class="icon-btn" onclick="closeTransfer()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="transfer-eq-info" style="background:#f0f2f5;border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:12px;"></div>
+      <div class="af-g2">
+        <div class="af"><label>Nuevo responsable *</label><input type="text" id="tr-responsable" placeholder="Nombre completo"></div>
+        <div class="af"><label>Puesto</label><input type="text" id="tr-puesto" placeholder="Ej. Supervisor"></div>
+      </div>
+      <div class="af-g2">
+        <div class="af"><label>Departamento</label><input type="text" id="tr-depto" placeholder="Ej. Producción"></div>
+        <div class="af"><label>Fecha de transferencia</label><input type="date" id="tr-fecha"></div>
+      </div>
+      <div class="af"><label>Motivo del cambio</label>
+        <select id="tr-motivo" style="width:100%;font-size:12px;padding:7px 10px;border:1.5px solid #e0e2e6;border-radius:8px;outline:none;">
+          <option value="Reasignación">Reasignación</option>
+          <option value="Reparación / Mantenimiento">Reparación / Mantenimiento</option>
+          <option value="Baja temporal">Baja temporal</option>
+          <option value="Reutilización">Reutilización</option>
+          <option value="Otro">Otro</option>
+        </select>
+      </div>
+      <div class="af"><label>Notas</label><textarea id="tr-notas" placeholder="Observaciones del cambio..."></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeTransfer()">Cancelar</button>
+      <button class="btn btn-blue" onclick="saveTransfer()">✅ Transferir</button>
     </div>
   </div>
 </div>
@@ -511,7 +573,7 @@ var USER_DIR={
   'usuario2@cafiver.com.mx':{name:'Usuario2',color:'#ff6d00'}
 };
 
-var equipos=[],reparaciones=[];
+var equipos=[],reparaciones=[],transferencias=[];
 var curUser=null,curView='dashboard',openEquipoId=null,editingId=null,dpCurTab='info';
 var sortCol='',sortAsc=true;
 var invFilter={q:'',tipo:'',estado:'',plaza:'',area:''};
@@ -593,6 +655,11 @@ function loadAppData(){
     if(curView==='qr')renderQR();
     setSyncUI('ok','En línea ✓');
   },function(){setSyncUI('error','Error');});
+  // Real-time transferencias
+  db.collection('transferencias').onSnapshot(function(s){
+    transferencias=s.docs.map(function(d){return d.data();});
+    if(openEquipoId) dpTab(dpCurTab);
+  });
   db.collection('reparaciones').onSnapshot(function(s){
     reparaciones=s.docs.map(function(d){return d.data();});
     if(curView==='reparaciones')renderReparaciones();
@@ -648,6 +715,16 @@ function renderDashboard(){
     +'<div class="stat-card"><div class="lbl">Laptops</div><div class="val">'+(byTipo.Laptop||0)+'</div></div>'
     +'<div class="stat-card"><div class="lbl">Servidores</div><div class="val">'+(byTipo.Servidor||0)+'</div></div>'
     +'<div class="stat-card"><div class="lbl">Reparaciones</div><div class="val">'+reparaciones.length+'</div></div>'
+    +(function(){
+      var r=0,a=0,v=0,s=0;
+      equipos.forEach(function(e){
+        var cls=vidaClass(calcAnios(e.fecha));
+        if(cls==='rojo')r++;else if(cls==='amarillo')a++;else if(cls==='verde')v++;else s++;
+      });
+      return '<div class="stat-card"><div class="lbl">🔴 Para cambio</div><div class="val red">'+r+'</div><div class="trend">+4 años</div></div>'
+        +'<div class="stat-card"><div class="lbl">🟡 Próximos</div><div class="val amber">'+a+'</div><div class="trend">3-4 años</div></div>'
+        +'<div class="stat-card"><div class="lbl">🟢 En buen tiempo</div><div class="val green">'+v+'</div><div class="trend">menos de 3 años</div></div>';
+    })()
     +'<div class="stat-card"><div class="lbl">Valor inventario</div><div class="val blue" style="font-size:17px;">'+fmt$(totalInv)+'</div></div>'
     +'</div>'
     +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">'
@@ -655,7 +732,8 @@ function renderDashboard(){
     +'<div class="tbl-box"><div class="tbl-hdr"><span class="tbl-hdr-title">🕐 Últimos registros</span></div>'
     +'<div style="overflow-x:auto;"><table><thead><tr><th>ID</th><th>Marca/Modelo</th><th>Plaza</th><th>Estado</th></tr></thead><tbody>'
     +equipos.slice(-6).reverse().map(function(e){
-      return '<tr style="cursor:pointer;" ondblclick="openPanel(\''+e.id+'\')">'
+      var rc=rowClass(e.fecha);
+      return '<tr class="'+rc+'" style="cursor:pointer;" ondblclick="openPanel(\''+e.id+'\')">'
         +'<td style="font-family:monospace;font-size:10px;color:#9aa0a6;">'+e.id+'</td>'
         +'<td><b>'+e.marca+'</b> '+e.modelo+'</td>'
         +'<td style="font-size:11px;">'+e.plaza+'</td>'
@@ -716,7 +794,8 @@ function renderInventario(){
     }).join('')
     +'</tr></thead><tbody>'
     +(data.length?data.map(function(e){
-      return '<tr style="cursor:pointer;" ondblclick="openPanel(\''+e.id+'\')">'
+      var rc=rowClass(e.fecha);
+      return '<tr class="'+rc+'" style="cursor:pointer;" ondblclick="openPanel(\''+e.id+'\')">'
         +'<td style="font-family:monospace;font-size:10px;color:#9aa0a6;">'+e.id+'</td>'
         +'<td>'+tipoPill(e.tipo)+'</td>'
         +'<td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;">'+e.area+'</td>'
@@ -729,11 +808,13 @@ function renderInventario(){
         +'<td style="font-family:monospace;font-size:11px;">'+(e.ip||'—')+'</td>'
         +'<td style="font-size:11px;">'+(e.so||'—')+'</td>'
         +'<td>'+estadoPill(e.estado)+'</td>'
+        +'<td>'+vidaPill(e.fecha)+'</td>'
         +'<td><div style="display:flex;gap:3px;">'
         +'<button class="icon-btn" title="Ver" onclick="event.stopPropagation();openPanel(\''+e.id+'\')">👁</button>'
         +'<button class="icon-btn" title="Editar" onclick="event.stopPropagation();editEquipo(\''+e.id+'\')">✏️</button>'
         +'<button class="icon-btn" title="Reparación" onclick="event.stopPropagation();openFormRepFor(\''+e.id+'\')">🔧</button>'
         +'<button class="icon-btn" title="Imprimir ficha" onclick="event.stopPropagation();printFichaId(\''+e.id+'\')">🖨</button>'
+        +'<button class="icon-btn" title="Transferir" onclick="event.stopPropagation();openTransfer(\''+e.id+'\')">🔄</button>'
         +'<button class="icon-btn" title="Eliminar" onclick="event.stopPropagation();deleteEquipo(\''+e.id+'\')" style="color:#ea4335;">🗑</button>'
         +'</div></td>'
         +'</tr>';
@@ -805,7 +886,7 @@ function deleteFromPanel(){deleteEquipo(openEquipoId);}
 
 function dpTab(tab){
   dpCurTab=tab;
-  ['info','red','compra','historial'].forEach(function(x){document.getElementById('dpt-'+x).classList.toggle('on',x===tab);});
+  ['info','red','compra','historial','asignaciones'].forEach(function(x){var el=document.getElementById('dpt-'+x);if(el)el.classList.toggle('on',x===tab);});
   var e=equipos.find(function(x){return x.id===openEquipoId;});if(!e)return;
   var body=document.getElementById('dp-body');
   var reps=reparaciones.filter(function(r){return r.equipo_id===openEquipoId;});
@@ -862,6 +943,48 @@ function dpTab(tab){
       );
   } else if(tab==='historial'){
     body.innerHTML='<div style="font-size:12px;color:#9aa0a6;padding:20px 0;text-align:center;">Historial de cambios próximamente.</div>';
+  } else if(tab==='asignaciones'){
+    var movs=transferencias.filter(function(t){return t.equipo_id===openEquipoId;}).sort(function(a,b){return a.fecha>b.fecha?-1:1;});
+    var anios=calcAnios(e.fecha);
+    body.innerHTML=
+      '<div class="dp-sec-t">Vida útil del equipo</div>'
+      +'<div style="background:#f7f9ff;border-radius:10px;padding:12px 14px;margin-bottom:12px;">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">'
+      +'<span style="font-size:12px;color:#5f6368;">Fecha de compra: <b>'+(e.fecha||'Sin registro')+'</b></span>'
+      +vidaPill(e.fecha)
+      +'</div>'
+      +(anios!==null?
+        '<div style="background:#e8eaed;border-radius:4px;height:8px;overflow:hidden;">'
+        +'<div style="height:100%;width:'+Math.min(100,anios/VIDA_UTIL*100).toFixed(0)+'%;background:'+(vidaClass(anios)==='rojo'?'#ea4335':vidaClass(anios)==='amarillo'?'#f9ab00':'#34a853')+';border-radius:4px;transition:width .3s;"></div>'
+        +'</div>'
+        +'<div style="display:flex;justify-content:space-between;font-size:10px;color:#9aa0a6;margin-top:4px;">'
+        +'<span>Compra</span><span>'+VIDA_UTIL+' años (reemplazo)</span></div>'
+        :'')
+      +'</div>'
+      +'<div class="dp-sec-t">Responsable actual</div>'
+      +'<div style="background:#e8f0fe;border-radius:10px;padding:10px 14px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">'
+      +'<div>'
+      +'<div style="font-size:13px;font-weight:700;">'+(e.responsable||'Sin asignar')+'</div>'
+      +(e.puesto?'<div style="font-size:11px;color:#5f6368;">'+e.puesto+(e.depto?' · '+e.depto:'')+'</div>':'')
+      +'</div>'
+      +'<button class="btn btn-blue btn-sm" onclick="openTransfer(''+openEquipoId+'')">🔄 Transferir</button>'
+      +'</div>'
+      +'<div class="dp-sec-t">Historial de asignaciones ('+movs.length+')</div>'
+      +(movs.length?
+        movs.map(function(m,i){
+          return '<div class="asign-item">'
+            +'<div class="asign-dot'+(i===0?' active':'')+'"></div>'
+            +'<div class="asign-info">'
+            +'<div class="asign-name">'+m.resp_nuevo+'</div>'
+            +'<div class="asign-meta">'+m.fecha+' · <b>'+m.motivo+'</b></div>'
+            +(m.resp_anterior?'<div class="asign-motivo">Anterior: '+m.resp_anterior+'</div>':'')
+            +(m.notas?'<div class="asign-motivo" style="font-style:italic;">'+m.notas+'</div>':'')
+            +'<div style="font-size:10px;color:#c8cad0;margin-top:2px;">Registró: '+m.registradoPor+'</div>'
+            +'</div></div>';
+        }).join('')
+        :'<div style="font-size:12px;color:#9aa0a6;padding:8px 0;">Sin movimientos registrados.</div>'
+        +'<button class="btn btn-sm" style="margin-top:6px;" onclick="openTransfer(''+openEquipoId+'')">🔄 Registrar primera asignación</button>'
+      );
   }
 }
 function togglePass(sid,enc){var s=document.getElementById(sid);if(!s)return;if(s.style.display==='none'){s.textContent=decodeURIComponent(enc);s.style.display='inline';}else s.style.display='none';}
@@ -1002,6 +1125,38 @@ function renderReparaciones(){
 }
 
 
+
+// ANTIGÜEDAD Y SEMÁFORO
+var VIDA_UTIL = 4; // años
+function calcAnios(fecha){
+  if(!fecha) return null;
+  var hoy = new Date();
+  var compra = new Date(fecha);
+  if(isNaN(compra)) return null;
+  return (hoy - compra) / (1000 * 60 * 60 * 24 * 365.25);
+}
+function vidaClass(anios){
+  if(anios === null) return '';
+  if(anios >= VIDA_UTIL) return 'rojo';
+  if(anios >= VIDA_UTIL - 1) return 'amarillo';
+  return 'verde';
+}
+function vidaPill(fecha){
+  var a = calcAnios(fecha);
+  if(a === null) return '<span style="font-size:11px;color:#9aa0a6;">Sin fecha</span>';
+  var cls = vidaClass(a);
+  var dot = cls==='rojo'?'🔴':cls==='amarillo'?'🟡':'🟢';
+  var txt = cls==='rojo'?'Para cambio':cls==='amarillo'?'Próximo':'En uso';
+  return '<span class="vida-dot vida-'+cls+'">'+dot+' '+a.toFixed(1)+'a · '+txt+'</span>';
+}
+function rowClass(fecha){
+  var a = calcAnios(fecha);
+  if(a === null) return '';
+  if(a >= VIDA_UTIL) return 'row-rojo';
+  if(a >= VIDA_UTIL - 1) return 'row-amarillo';
+  return '';
+}
+
 // DETECTAR MÓVIL
 function isMobile(){ return window.innerWidth <= 768; }
 
@@ -1032,6 +1187,55 @@ function renderInventarioCards(data){
       +'<button class="btn btn-sm" onclick="event.stopPropagation();printFichaId(''+e.id+'')">🖨</button>'
       +'</div></div>';
   }).join('');
+}
+
+
+// TRANSFERENCIAS
+var transferEqId = null;
+function openTransfer(id){
+  transferEqId = id;
+  var e = equipos.find(function(x){return x.id===id;});if(!e)return;
+  document.getElementById('transfer-eq-info').innerHTML =
+    '<b>'+e.id+'</b> — '+e.marca+' '+e.modelo+
+    ' <span style="color:#9aa0a6;">Responsable actual: '+(e.responsable||'Sin asignar')+'</span>';
+  document.getElementById('tr-responsable').value='';
+  document.getElementById('tr-puesto').value='';
+  document.getElementById('tr-depto').value='';
+  document.getElementById('tr-fecha').value=new Date().toISOString().slice(0,10);
+  document.getElementById('tr-motivo').value='Reasignación';
+  document.getElementById('tr-notas').value='';
+  document.getElementById('overlay-transfer').style.display='flex';
+}
+function closeTransfer(){document.getElementById('overlay-transfer').style.display='none';transferEqId=null;}
+function saveTransfer(){
+  var id=transferEqId;
+  var e=equipos.find(function(x){return x.id===id;});if(!e)return;
+  var nuevoResp=document.getElementById('tr-responsable').value.trim();
+  if(!nuevoResp){alert('El nuevo responsable es obligatorio.');return;}
+  var mov={
+    id:'TR'+Date.now().toString(36).toUpperCase(),
+    equipo_id:id,
+    resp_anterior:e.responsable||'',
+    puesto_anterior:e.puesto||'',
+    depto_anterior:e.depto||'',
+    resp_nuevo:nuevoResp,
+    puesto_nuevo:document.getElementById('tr-puesto').value.trim(),
+    depto_nuevo:document.getElementById('tr-depto').value.trim(),
+    fecha:document.getElementById('tr-fecha').value,
+    motivo:document.getElementById('tr-motivo').value,
+    notas:document.getElementById('tr-notas').value.trim(),
+    registradoPor:curUser?curUser.name:'',
+    ts:nowStr()
+  };
+  db.collection('transferencias').doc(mov.id).set(mov);
+  // Actualizar equipo
+  e.responsable=nuevoResp;
+  e.puesto=document.getElementById('tr-puesto').value.trim();
+  e.depto=document.getElementById('tr-depto').value.trim();
+  e.updBy=curUser?curUser.name:'';e.updTs=nowStr();
+  fbSave(e);
+  closeTransfer();toast('✅ Equipo transferido a '+nuevoResp);
+  if(openEquipoId===id)dpTab('asignaciones');
 }
 
 // EXPORT CSV
