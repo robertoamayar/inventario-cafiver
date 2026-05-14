@@ -160,6 +160,86 @@ tr:hover td{background:#f7f9ff;}
 
 #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(10px);background:#1c1e21;color:#fff;padding:9px 22px;border-radius:10px;font-size:12px;font-weight:500;opacity:0;transition:all .25s;pointer-events:none;z-index:999;max-width:90vw;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,.25);}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ═══════════════════════════════════
+   RESPONSIVE MÓVIL
+═══════════════════════════════════ */
+@media (max-width: 768px) {
+  body.app-mode{background:#eef2f7;}
+
+  /* TOPBAR móvil */
+  .topbar{height:auto;flex-wrap:wrap;padding:10px 12px;gap:6px;}
+  .logo-wrap{flex:1;}
+  .proj-sub{display:none;}
+  .tnav{padding:5px 8px;font-size:11px;}
+  .topbar-right{width:100%;justify-content:flex-end;gap:5px;border-top:1px solid #e8eaed;padding-top:8px;margin-top:2px;}
+  #cur-nm{display:none;}
+
+  /* VIEWS */
+  .view-wrap{padding:.75rem 1rem;}
+
+  /* DASHBOARD */
+  .stats-grid{grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px;}
+  .stat-card{padding:12px 14px;}
+  .stat-card .val{font-size:22px;}
+  .dash-title{font-size:16px;}
+  #view-dashboard .tbl-box:last-child > div:last-child{overflow-x:auto;}
+
+  /* Ocultar columnas menos importantes en tabla */
+  table th:nth-child(3),table td:nth-child(3),
+  table th:nth-child(7),table td:nth-child(7),
+  table th:nth-child(8),table td:nth-child(8),
+  table th:nth-child(10),table td:nth-child(10){display:none;}
+
+  /* FILTROS en columna */
+  .tbl-hdr{flex-direction:column;align-items:stretch;}
+  .tbl-tools{flex-direction:column;gap:6px;}
+  .tbl-tools .fi-sm{width:100%!important;}
+  .tbl-tools .btn{width:100%;justify-content:center;}
+
+  /* DETAIL PANEL */
+  #dp{width:100%;border-radius:20px 20px 0 0;top:auto;bottom:0;height:88vh;transform:translateY(100%);box-shadow:0 -8px 32px rgba(0,0,0,.15);}
+  #dp.open{transform:translateY(0);}
+
+  /* MODAL */
+  .modal-card,.modal-card.wide{max-width:100%;border-radius:20px 20px 0 0;position:fixed;bottom:0;left:0;right:0;margin:0;max-height:90vh;}
+  #overlay-form,#confirm-overlay{align-items:flex-end;padding:0;}
+  .af-g2,.af-g3{grid-template-columns:1fr;}
+
+  /* QR */
+  .qr-grid{padding:12px;gap:12px;}
+  .qr-card{width:calc(50% - 6px);}
+  .qr-toolbar{flex-direction:column;align-items:stretch;gap:8px;}
+  .qr-toolbar .fi-sm{width:100%!important;}
+  .qr-toolbar .btn{width:100%;justify-content:center;}
+
+  /* REPARACIONES */
+  .rep-card .rep-hd{flex-direction:column;gap:6px;}
+
+  /* DASHBOARD grid una columna en móvil */
+  #view-dashboard > div:last-child{grid-template-columns:1fr!important;}
+
+  /* CONFIRM */
+  .confirm-card{width:90%;border-radius:16px;}
+
+  /* LOGIN */
+  .lcard{width:100%;max-width:360px;}
+}
+
+@media (max-width: 480px) {
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+  .qr-card{width:calc(50% - 6px);}
+  .tnav span{display:none;}
+  .tnav{font-size:16px;padding:6px 8px;}
+}
+
+
+@media (max-width: 480px) {
+  .tnav-txt{display:none;}
+  .tnav-icon{font-size:17px;}
+  .tnav{padding:6px 10px;}
+}
+
 </style>
 </head>
 <body>
@@ -201,10 +281,10 @@ tr:hover td{background:#f7f9ff;}
       <div class="logo-mark">🖥</div>
       <div><div class="proj-name">APP CAFIVER</div><div class="proj-sub">Inventario de equipos</div></div>
     </div>
-    <button class="tnav on" id="tnav-dashboard"    onclick="switchView('dashboard')">📊 Dashboard</button>
-    <button class="tnav"    id="tnav-inventario"   onclick="switchView('inventario')">🗃 Inventario</button>
-    <button class="tnav"    id="tnav-qr"           onclick="switchView('qr')">⬛ Códigos QR</button>
-    <button class="tnav"    id="tnav-reparaciones" onclick="switchView('reparaciones')">🔧 Reparaciones</button>
+    <button class="tnav on" id="tnav-dashboard"    onclick="switchView('dashboard')"><span class='tnav-icon'>📊</span><span class='tnav-txt'> Dashboard</span></button>
+    <button class="tnav"    id="tnav-inventario"   onclick="switchView('inventario')"><span class='tnav-icon'>🗃</span><span class='tnav-txt'> Inventario</span></button>
+    <button class="tnav"    id="tnav-qr"           onclick="switchView('qr')"><span class='tnav-icon'>⬛</span><span class='tnav-txt'> QR</span></button>
+    <button class="tnav"    id="tnav-reparaciones" onclick="switchView('reparaciones')"><span class='tnav-icon'>🔧</span><span class='tnav-txt'> Reparaciones</span></button>
     <div class="topbar-right">
       <div class="sync-pill ok" id="topbar-sync">
         <span style="width:6px;height:6px;border-radius:50%;background:currentColor;display:inline-block;"></span>
@@ -658,7 +738,31 @@ function renderInventario(){
         +'</div></td>'
         +'</tr>';
     }).join(''):'<tr><td colspan="13" class="empty-state">No hay equipos que coincidan</td></tr>')
-    +'</tbody></table></div></div>';
+    +'</tbody></table></div></div>'
+    ;
+  if(isMobile()){
+    // En móvil reemplazar tabla por cards
+    w.querySelector('.tbl-box').innerHTML=
+      '<div class="tbl-hdr">'
+      +'<span class="tbl-hdr-title">'+data.length+' equipo'+(data.length!==1?'s':'')+'</span>'
+      +'<button class="btn btn-blue btn-sm" onclick="openFormEquipo()">+ Nuevo</button>'
+      +'</div>'
+      +'<div style="padding:6px 12px 2px;">'
+      +'<input class="fi-sm" type="text" placeholder="🔍 Buscar..." value="'+invFilter.q+'" oninput="invFilter.q=this.value;renderInventario()" style="width:100%;margin-bottom:6px;">'
+      +'<div style="display:flex;gap:6px;margin-bottom:8px;">'
+      +'<select class="fi-sm" style="flex:1;" onchange="invFilter.area=this.value;renderInventario()">'
+      +'<option value="">Todas las áreas</option>'
+      +areas.map(function(a){return '<option value="'+a+'"'+(invFilter.area===a?' selected':'')+'>'+a+'</option>';}).join('')
+      +'</select>'
+      +'<select class="fi-sm" style="flex:1;" onchange="invFilter.estado=this.value;renderInventario()">'
+      +'<option value="">Todos los estados</option>'
+      +['Bueno','Regular','Malo','Baja'].map(function(t){return '<option value="'+t+'"'+(invFilter.estado===t?' selected':'')+'>'+t+'</option>';}).join('')
+      +'</select>'
+      +'</div></div>'
+      +'<div style="padding:0 12px 12px;">'
+      +renderInventarioCards(data)
+      +'</div>';
+  }
 }
 function sortBy(col){if(sortCol===col)sortAsc=!sortAsc;else{sortCol=col;sortAsc=true;}renderInventario();}
 
@@ -895,6 +999,39 @@ function renderReparaciones(){
         +'</div>';
     }).join('')
     +(!data.length?'<div class="tbl-box"><div class="empty-state">Sin reparaciones registradas.</div></div>':'');
+}
+
+
+// DETECTAR MÓVIL
+function isMobile(){ return window.innerWidth <= 768; }
+
+// CARDS MÓVIL para inventario
+function renderInventarioCards(data){
+  if(!data.length) return '<div class="empty-state">No hay equipos que coincidan</div>';
+  return data.map(function(e){
+    return '<div style="background:#fff;border:1px solid #e8eaed;border-radius:14px;padding:14px 16px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.06);" onclick="openPanel(''+e.id+'')">'
+      +'<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">'
+      +'<div style="flex:1;">'
+      +'<div style="font-size:14px;font-weight:700;color:#1c1e21;">'+(e.nombre||e.modelo)+'</div>'
+      +'<div style="font-size:12px;color:#9aa0a6;margin-top:2px;">'+e.marca+' '+e.modelo+'</div>'
+      +'</div>'
+      +'<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">'
+      +tipoPill(e.tipo)+estadoPill(e.estado)
+      +'</div></div>'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;font-size:11px;color:#9aa0a6;margin-bottom:10px;">'
+      +'<div>📍 '+e.plaza+'</div>'
+      +'<div>🏢 '+(e.area||'—')+'</div>'
+      +'<div>💻 '+(e.cpu||'—')+'</div>'
+      +'<div>💾 '+(e.ram||'—')+'</div>'
+      +(e.ip?'<div>🌐 '+e.ip+'</div>':'')
+      +(e.so?'<div>🖥 '+e.so+'</div>':'')
+      +'</div>'
+      +'<div style="display:flex;gap:6px;">'
+      +'<button class="btn btn-sm" style="flex:1;justify-content:center;" onclick="event.stopPropagation();editEquipo(''+e.id+'')">✏️ Editar</button>'
+      +'<button class="btn btn-sm" style="flex:1;justify-content:center;" onclick="event.stopPropagation();openFormRepFor(''+e.id+'')">🔧 Reparación</button>'
+      +'<button class="btn btn-sm" onclick="event.stopPropagation();printFichaId(''+e.id+'')">🖨</button>'
+      +'</div></div>';
+  }).join('');
 }
 
 // EXPORT CSV
