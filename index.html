@@ -5,142 +5,161 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>InventarioTech — APP CAFIVER</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-<!-- Firebase Compat SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<!-- QRCode -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Inter',sans-serif;background:#1a73e8;min-height:100vh;color:#1c1e21;font-size:13px;}
-body.app-mode{background:#f5f6f8;}
+body{font-family:'Inter',sans-serif;background:linear-gradient(135deg,#1a73e8 0%,#0d47a1 100%);min-height:100vh;color:#1c1e21;font-size:13px;}
+body.app-mode{background:#eef2f7;}
 .hidden{display:none!important;}
 ::-webkit-scrollbar{width:5px;height:5px;}
 ::-webkit-scrollbar-thumb{background:#c8cad0;border-radius:3px;}
 
 /* LOGIN */
 #login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem;}
-.lcard{background:#fff;border-radius:16px;padding:2.5rem 2rem;width:380px;box-shadow:0 12px 48px rgba(0,0,0,.3);}
-.btn{display:inline-flex;align-items:center;gap:4px;padding:5px 12px;border-radius:6px;border:1px solid #c8cad0;background:#fff;color:#1c1e21;font-size:12px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;white-space:nowrap;}
-.btn:hover{background:#f0f1f3;}
+.lcard{background:#fff;border-radius:20px;padding:2.5rem 2rem;width:400px;box-shadow:0 20px 60px rgba(0,0,0,.35);}
+.btn{display:inline-flex;align-items:center;gap:4px;padding:6px 14px;border-radius:8px;border:1px solid #dde1e7;background:#fff;color:#1c1e21;font-size:12px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;white-space:nowrap;}
+.btn:hover{background:#f0f2f5;}
 .btn-sm{padding:4px 10px;font-size:11px;}
-.btn-blue{background:#1a73e8;color:#fff;border-color:#1a73e8;}
-.btn-blue:hover{background:#1557b0;}
+.btn-blue{background:linear-gradient(135deg,#1a73e8,#1557b0);color:#fff;border-color:transparent;box-shadow:0 2px 8px rgba(26,115,232,.35);}
+.btn-blue:hover{background:linear-gradient(135deg,#1557b0,#0d3c7a);}
 .btn-red{background:#fce8e6;color:#ea4335;border-color:transparent;}
-.btn-red:hover{background:#fbd7d4;}
 .btn-green{background:#e6f4ea;color:#34a853;border-color:transparent;}
-.fi{font-size:13px;padding:10px 12px;border:1.5px solid #e0e2e6;border-radius:8px;outline:none;font-family:'Inter',sans-serif;width:100%;transition:border-color .15s;}
-.fi:focus{border-color:#1a73e8;}
+.fi{font-size:13px;padding:10px 12px;border:1.5px solid #e0e2e6;border-radius:10px;outline:none;font-family:'Inter',sans-serif;width:100%;transition:border-color .15s;}
+.fi:focus{border-color:#1a73e8;box-shadow:0 0 0 3px rgba(26,115,232,.12);}
 
-/* APP */
+/* APP SHELL */
 #app{display:flex;flex-direction:column;height:100vh;overflow:hidden;}
-.topbar{height:52px;background:#fff;border-bottom:1px solid #e0e2e6;display:flex;align-items:center;padding:0 14px;gap:10px;flex-shrink:0;z-index:50;}
-.logo-mark{width:28px;height:28px;background:#1a73e8;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;}
-.proj-name{font-size:14px;font-weight:700;}
-.tnav{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:500;color:#5f6368;cursor:pointer;border:none;background:none;font-family:'Inter',sans-serif;transition:all .15s;}
-.tnav:hover{background:#f0f1f3;color:#1c1e21;}
-.tnav.on{background:#e8f0fe;color:#1a73e8;}
+.topbar{height:56px;background:#fff;border-bottom:1px solid #e8eaed;display:flex;align-items:center;padding:0 20px;gap:10px;flex-shrink:0;z-index:50;box-shadow:0 1px 4px rgba(0,0,0,.08);}
+.logo-wrap{display:flex;align-items:center;gap:10px;margin-right:8px;}
+.logo-mark{width:32px;height:32px;background:linear-gradient(135deg,#1a73e8,#0d47a1);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;box-shadow:0 2px 6px rgba(26,115,232,.4);}
+.proj-name{font-size:15px;font-weight:700;color:#1c1e21;}
+.proj-sub{font-size:11px;color:#9aa0a6;}
+.tnav{padding:6px 14px;border-radius:8px;font-size:12px;font-weight:500;color:#5f6368;cursor:pointer;border:none;background:none;font-family:'Inter',sans-serif;transition:all .15s;display:flex;align-items:center;gap:5px;}
+.tnav:hover{background:#f0f2f5;color:#1c1e21;}
+.tnav.on{background:#e8f0fe;color:#1a73e8;font-weight:600;}
 .topbar-right{margin-left:auto;display:flex;align-items:center;gap:8px;}
-.user-pill{display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;background:#f0f1f3;font-size:12px;font-weight:500;}
-.cu-av{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;}
-.sync-pill{display:flex;align-items:center;gap:5px;padding:3px 8px;border-radius:10px;font-size:11px;font-weight:500;}
+.user-pill{display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;background:#f0f2f5;font-size:12px;font-weight:500;cursor:pointer;transition:background .15s;}
+.user-pill:hover{background:#e8eaed;}
+.cu-av{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;}
+.sync-pill{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:10px;font-size:11px;font-weight:600;}
 .sync-pill.ok{background:#e6f4ea;color:#2d6a2d;}
 .sync-pill.saving{background:#e8f0fe;color:#1a73e8;}
 .sync-pill.error{background:#fce8e6;color:#c0392b;}
 
 /* VIEWS */
-.view-wrap{flex:1;overflow:auto;padding:1rem 1.5rem;}
+.view-wrap{flex:1;overflow:auto;padding:1.25rem 1.75rem;background:#eef2f7;}
 
 /* DASHBOARD */
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:20px;}
-.stat-card{background:#fff;border:1px solid #e0e2e6;border-radius:12px;padding:14px 16px;}
-.stat-card .lbl{font-size:11px;font-weight:600;color:#9aa0a6;text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;}
-.stat-card .val{font-size:24px;font-weight:700;}
+.dash-title{font-size:18px;font-weight:700;color:#1c1e21;margin-bottom:4px;}
+.dash-sub{font-size:12px;color:#9aa0a6;margin-bottom:20px;}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px;margin-bottom:20px;}
+.stat-card{background:#fff;border-radius:14px;padding:16px 18px;box-shadow:0 1px 4px rgba(0,0,0,.07);border:1px solid #e8eaed;transition:transform .15s,box-shadow .15s;}
+.stat-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.1);}
+.stat-card .lbl{font-size:11px;font-weight:600;color:#9aa0a6;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;}
+.stat-card .val{font-size:26px;font-weight:700;line-height:1;}
 .stat-card .val.blue{color:#1a73e8;} .stat-card .val.green{color:#34a853;} .stat-card .val.amber{color:#f9ab00;} .stat-card .val.red{color:#ea4335;}
+.stat-card .trend{font-size:11px;color:#9aa0a6;margin-top:4px;}
 
-/* TABLE */
-.tbl-box{background:#fff;border:1px solid #e0e2e6;border-radius:12px;overflow:hidden;margin-bottom:16px;}
-.tbl-hdr{padding:10px 14px;background:#f0f1f3;border-bottom:1px solid #e0e2e6;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;}
-.tbl-hdr span{font-size:13px;font-weight:700;}
+/* CARDS TABLE */
+.tbl-box{background:#fff;border-radius:14px;overflow:hidden;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,0,0,.07);border:1px solid #e8eaed;}
+.tbl-hdr{padding:12px 16px;background:#fff;border-bottom:1px solid #e8eaed;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;}
+.tbl-hdr-title{font-size:13px;font-weight:700;color:#1c1e21;}
 .tbl-tools{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
 table{width:100%;border-collapse:collapse;}
-th{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#5f6368;padding:7px 10px;border-bottom:1px solid #e0e2e6;background:#f0f1f3;text-align:left;white-space:nowrap;cursor:pointer;user-select:none;}
-th:hover{background:#e8eaed;}
-td{padding:7px 10px;border-bottom:1px solid #e0e2e6;font-size:12px;vertical-align:middle;}
+th{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#9aa0a6;padding:9px 12px;border-bottom:1px solid #e8eaed;background:#fafbfc;text-align:left;white-space:nowrap;cursor:pointer;user-select:none;}
+th:hover{background:#f0f2f5;color:#5f6368;}
+td{padding:9px 12px;border-bottom:1px solid #f0f2f5;font-size:12px;vertical-align:middle;}
 tr:last-child td{border-bottom:none;}
-tr:hover td{background:#f7f8ff;}
-.pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600;}
+tr:hover td{background:#f7f9ff;}
+.pill{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600;line-height:1.6;}
 .pill-desktop{background:#e8f0fe;color:#1a73e8;}
-.pill-laptop{background:#e6f4ea;color:#34a853;}
-.pill-servidor{background:#f3e8fd;color:#9c27b0;}
-.pill-impresora{background:#fef7e0;color:#f9ab00;}
-.pill-otro{background:#f0f1f3;color:#5f6368;}
-.pill-bueno{background:#e6f4ea;color:#34a853;}
-.pill-regular{background:#fef7e0;color:#f9ab00;}
-.pill-malo{background:#fce8e6;color:#ea4335;}
-.pill-baja{background:#f0f1f3;color:#9aa0a6;}
-.sem-dot{width:9px;height:9px;border-radius:50%;display:inline-block;}
-.fi-sm{font-size:12px;padding:5px 8px;border:1.5px solid #e0e2e6;border-radius:6px;outline:none;font-family:'Inter',sans-serif;}
+.pill-laptop{background:#e6f4ea;color:#2e7d32;}
+.pill-servidor{background:#f3e8fd;color:#7b1fa2;}
+.pill-impresora{background:#fff3e0;color:#e65100;}
+.pill-otro{background:#f0f2f5;color:#5f6368;}
+.pill-bueno{background:#e6f4ea;color:#2e7d32;}
+.pill-regular{background:#fff8e1;color:#f57f17;}
+.pill-malo{background:#fce8e6;color:#c62828;}
+.pill-baja{background:#f0f2f5;color:#9aa0a6;}
+.fi-sm{font-size:12px;padding:6px 10px;border:1.5px solid #e0e2e6;border-radius:8px;outline:none;font-family:'Inter',sans-serif;background:#fff;transition:border-color .15s;}
 .fi-sm:focus{border-color:#1a73e8;}
-.icon-btn{padding:4px 7px;border:1px solid #e0e2e6;border-radius:6px;cursor:pointer;background:#fff;font-size:12px;transition:all .15s;}
-.icon-btn:hover{background:#f0f1f3;}
-.empty-state{padding:2rem;text-align:center;color:#9aa0a6;font-size:13px;}
+.icon-btn{padding:5px 8px;border:1px solid #e0e2e6;border-radius:7px;cursor:pointer;background:#fff;font-size:12px;transition:all .15s;}
+.icon-btn:hover{background:#f0f2f5;border-color:#c8cad0;}
+.empty-state{padding:2.5rem;text-align:center;color:#9aa0a6;font-size:13px;}
 
 /* MODAL */
-#overlay-form,#confirm-overlay,#qr-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:flex-start;justify-content:center;z-index:400;padding:20px;overflow-y:auto;}
-.modal-card{background:#fff;border-radius:12px;width:100%;max-width:720px;box-shadow:0 8px 32px rgba(0,0,0,.18);margin:auto;}
+#overlay-form,#confirm-overlay{position:fixed;inset:0;background:rgba(15,20,35,.5);display:flex;align-items:flex-start;justify-content:center;z-index:400;padding:20px;overflow-y:auto;backdrop-filter:blur(2px);}
+.modal-card{background:#fff;border-radius:16px;width:100%;max-width:720px;box-shadow:0 16px 48px rgba(0,0,0,.22);margin:auto;}
 .modal-card.wide{max-width:900px;}
-.modal-hd{padding:14px 18px;border-bottom:1px solid #e0e2e6;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:1;border-radius:12px 12px 0 0;}
+.modal-hd{padding:16px 20px;border-bottom:1px solid #e8eaed;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:1;border-radius:16px 16px 0 0;}
 .modal-hd h3{font-size:15px;font-weight:700;}
-.modal-body{padding:16px 18px 20px;}
-.modal-footer{padding:12px 18px;border-top:1px solid #e0e2e6;display:flex;justify-content:flex-end;gap:8px;}
-.form-section{font-size:10px;font-weight:700;color:#1a73e8;text-transform:uppercase;letter-spacing:.05em;margin:14px 0 8px;padding-bottom:4px;border-bottom:1.5px solid #e8f0fe;}
+.modal-body{padding:16px 20px 20px;}
+.modal-footer{padding:12px 20px;border-top:1px solid #e8eaed;display:flex;justify-content:flex-end;gap:8px;background:#fafbfc;border-radius:0 0 16px 16px;}
+.form-section{font-size:10px;font-weight:700;color:#1a73e8;text-transform:uppercase;letter-spacing:.06em;margin:16px 0 8px;padding-bottom:5px;border-bottom:2px solid #e8f0fe;}
 .af{margin-bottom:10px;}
-.af label{display:block;font-size:10px;font-weight:700;color:#5f6368;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;}
-.af input,.af select,.af textarea{width:100%;font-size:12px;padding:7px 10px;border:1.5px solid #e0e2e6;border-radius:7px;outline:none;font-family:'Inter',sans-serif;}
-.af input:focus,.af select:focus,.af textarea:focus{border-color:#1a73e8;}
+.af label{display:block;font-size:10px;font-weight:700;color:#9aa0a6;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;}
+.af input,.af select,.af textarea{width:100%;font-size:12px;padding:7px 10px;border:1.5px solid #e0e2e6;border-radius:8px;outline:none;font-family:'Inter',sans-serif;transition:border-color .15s;}
+.af input:focus,.af select:focus,.af textarea:focus{border-color:#1a73e8;box-shadow:0 0 0 3px rgba(26,115,232,.1);}
 .af textarea{resize:vertical;min-height:70px;line-height:1.5;}
 .af-g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .af-g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
-.confirm-card{background:#fff;border-radius:12px;padding:1.5rem;width:340px;box-shadow:0 8px 32px rgba(0,0,0,.18);}
+.confirm-card{background:#fff;border-radius:16px;padding:1.5rem;width:360px;box-shadow:0 16px 48px rgba(0,0,0,.22);}
 .confirm-card h3{font-size:15px;font-weight:700;margin-bottom:.75rem;}
 .confirm-card p{font-size:13px;color:#5f6368;line-height:1.6;margin-bottom:1rem;}
 .confirm-btns{display:flex;gap:8px;justify-content:flex-end;}
 
 /* DETAIL PANEL */
-#dp{position:fixed;top:0;right:0;width:500px;height:100vh;background:#fff;border-left:1px solid #e0e2e6;z-index:200;display:flex;flex-direction:column;box-shadow:-4px 0 24px rgba(0,0,0,.1);transform:translateX(100%);transition:transform .25s cubic-bezier(.4,0,.2,1);}
+#dp{position:fixed;top:0;right:0;width:520px;height:100vh;background:#fff;border-left:1px solid #e8eaed;z-index:200;display:flex;flex-direction:column;box-shadow:-8px 0 32px rgba(0,0,0,.12);transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);}
 #dp.open{transform:translateX(0);}
-#dp-overlay{position:fixed;inset:0;z-index:199;display:none;}
+#dp-overlay{position:fixed;inset:0;z-index:199;display:none;background:rgba(0,0,0,.1);}
 #dp-overlay.on{display:block;}
-.dp-hd{padding:14px 18px 10px;border-bottom:1px solid #e0e2e6;flex-shrink:0;}
-.dp-tabs{display:flex;border-bottom:1px solid #e0e2e6;padding:0 18px;flex-shrink:0;}
-.dp-tab{padding:9px 14px;font-size:12px;font-weight:600;color:#5f6368;cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;transition:all .15s;font-family:'Inter',sans-serif;}
+.dp-hd{padding:16px 20px 12px;border-bottom:1px solid #e8eaed;flex-shrink:0;background:#fafbfc;}
+.dp-tabs{display:flex;border-bottom:1px solid #e8eaed;padding:0 20px;flex-shrink:0;background:#fff;}
+.dp-tab{padding:10px 16px;font-size:12px;font-weight:600;color:#9aa0a6;cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;transition:all .15s;font-family:'Inter',sans-serif;}
 .dp-tab.on{color:#1a73e8;border-bottom-color:#1a73e8;}
-.dp-body{flex:1;overflow-y:auto;padding:16px 18px;}
-.dp-row{display:grid;grid-template-columns:130px 1fr;align-items:start;padding:7px 0;border-bottom:1px solid #e0e2e6;}
+.dp-body{flex:1;overflow-y:auto;padding:16px 20px;}
+.dp-row{display:grid;grid-template-columns:140px 1fr;align-items:start;padding:8px 0;border-bottom:1px solid #f0f2f5;}
 .dp-row:last-child{border-bottom:none;}
-.dp-key{font-size:11px;color:#9aa0a6;font-weight:600;text-transform:uppercase;letter-spacing:.03em;padding-top:2px;}
-.dp-val{font-size:13px;font-weight:500;word-break:break-all;}
-.dp-sec-t{font-size:10px;font-weight:700;color:#1a73e8;text-transform:uppercase;letter-spacing:.05em;margin:14px 0 6px;padding-bottom:4px;border-bottom:1.5px solid #e8f0fe;}
+.dp-key{font-size:10px;color:#9aa0a6;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding-top:2px;}
+.dp-val{font-size:13px;font-weight:500;word-break:break-all;color:#1c1e21;}
+.dp-sec-t{font-size:10px;font-weight:700;color:#1a73e8;text-transform:uppercase;letter-spacing:.06em;margin:16px 0 6px;padding-bottom:5px;border-bottom:2px solid #e8f0fe;}
 
 /* QR */
-.qr-grid{display:flex;flex-wrap:wrap;gap:16px;padding:16px;}
-.qr-card{background:#fff;border:1px solid #e0e2e6;border-radius:12px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:8px;width:190px;}
-.qr-card .qr-lbl{font-size:12px;font-weight:700;text-align:center;color:#1c1e21;}
+.qr-toolbar{padding:14px 20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #e8eaed;background:#fff;flex-wrap:wrap;box-shadow:0 1px 4px rgba(0,0,0,.05);}
+.qr-grid{display:flex;flex-wrap:wrap;gap:16px;padding:20px;}
+.qr-card{background:#fff;border:1px solid #e8eaed;border-radius:14px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:8px;width:195px;box-shadow:0 2px 8px rgba(0,0,0,.06);transition:box-shadow .15s;}
+.qr-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.12);}
+.qr-card .qr-id{font-size:13px;font-weight:700;color:#1a73e8;}
+.qr-card .qr-lbl{font-size:12px;font-weight:600;text-align:center;color:#1c1e21;}
 .qr-card .qr-sub{font-size:11px;color:#9aa0a6;text-align:center;}
 
 /* REPARACIONES */
-.rep-card{background:#fff;border:1px solid #e0e2e6;border-radius:10px;padding:12px 16px;margin-bottom:10px;}
-.rep-card .rep-hd{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;}
+.rep-card{background:#fff;border:1px solid #e8eaed;border-radius:12px;padding:14px 18px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+.rep-card .rep-hd{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;}
 .rep-card .rep-title{font-size:13px;font-weight:700;}
-.rep-card .rep-meta{font-size:12px;color:#5f6368;margin-top:2px;}
+.rep-card .rep-meta{font-size:12px;color:#9aa0a6;margin-top:2px;}
 
-#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(10px);background:#323232;color:#fff;padding:8px 20px;border-radius:8px;font-size:12px;font-weight:500;opacity:0;transition:all .25s;pointer-events:none;z-index:999;max-width:90vw;text-align:center;}
+/* FICHA QR IMPRIMIBLE */
+.ficha-qr{display:none;}
+@media print{
+  body *{display:none!important;}
+  .ficha-qr{display:block!important;font-family:'Inter',sans-serif;padding:20px;max-width:600px;margin:0 auto;}
+  .ficha-qr *{display:block!important;}
+  .ficha-header{display:flex!important;flex-direction:row!important;align-items:flex-start!important;gap:20px!important;border-bottom:2px solid #1a73e8!important;padding-bottom:14px!important;margin-bottom:14px!important;}
+  .ficha-secciones{display:block!important;}
+  .ficha-sec{margin-bottom:12px!important;}
+  .ficha-sec-title{font-size:9px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:.06em!important;color:#1a73e8!important;margin-bottom:5px!important;border-bottom:1px solid #e0e2e6!important;padding-bottom:3px!important;}
+  .ficha-grid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:4px 16px!important;}
+  .ficha-row{display:flex!important;flex-direction:column!important;padding:2px 0!important;}
+  .ficha-k{font-size:8px!important;color:#9aa0a6!important;font-weight:700!important;text-transform:uppercase!important;}
+  .ficha-v{font-size:11px!important;font-weight:600!important;color:#1c1e21!important;}
+  .rep-hist-item{border:1px solid #e0e2e6!important;border-radius:6px!important;padding:6px 8px!important;margin-bottom:5px!important;}
+}
+
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(10px);background:#1c1e21;color:#fff;padding:9px 22px;border-radius:10px;font-size:12px;font-weight:500;opacity:0;transition:all .25s;pointer-events:none;z-index:999;max-width:90vw;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,.25);}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-@media print{#dp,#dp-overlay,#overlay-form,#confirm-overlay,.topbar-right{display:none!important;}}
 </style>
 </head>
 <body>
@@ -149,26 +168,26 @@ tr:hover td{background:#f7f8ff;}
 <div id="login-screen">
   <div class="lcard">
     <div style="text-align:center;margin-bottom:2rem;">
-      <div style="width:56px;height:56px;background:#1a73e8;border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:0 4px 16px rgba(26,115,232,.35);">
-        <span style="color:#fff;font-size:26px;">🖥</span>
+      <div style="width:64px;height:64px;background:linear-gradient(135deg,#1a73e8,#0d47a1);border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:0 6px 20px rgba(26,115,232,.45);">
+        <span style="color:#fff;font-size:30px;">🖥</span>
       </div>
-      <div style="font-size:20px;font-weight:700;color:#1c1e21;">InventarioTech</div>
-      <div style="font-size:12px;color:#5f6368;margin-top:4px;">APP CAFIVER</div>
+      <div style="font-size:22px;font-weight:700;color:#1c1e21;">InventarioTech</div>
+      <div style="font-size:12px;color:#9aa0a6;margin-top:4px;font-weight:500;">APP CAFIVER · Gestión de equipos</div>
     </div>
-    <div id="login-error" style="display:none;background:#fce8e6;color:#c0392b;border-radius:8px;padding:10px 14px;font-size:12px;margin-bottom:16px;line-height:1.5;"></div>
+    <div id="login-error" style="display:none;background:#fce8e6;color:#c0392b;border-radius:10px;padding:10px 14px;font-size:12px;margin-bottom:16px;line-height:1.5;"></div>
     <div style="display:flex;flex-direction:column;gap:14px;">
       <div>
-        <label style="font-size:11px;font-weight:600;color:#5f6368;letter-spacing:.04em;text-transform:uppercase;display:block;margin-bottom:5px;">Correo electrónico</label>
+        <label style="font-size:10px;font-weight:700;color:#9aa0a6;letter-spacing:.05em;text-transform:uppercase;display:block;margin-bottom:5px;">Correo electrónico</label>
         <input class="fi" type="email" id="login-email" placeholder="correo@cafiver.com.mx" autocomplete="email">
       </div>
       <div>
-        <label style="font-size:11px;font-weight:600;color:#5f6368;letter-spacing:.04em;text-transform:uppercase;display:block;margin-bottom:5px;">Contraseña</label>
+        <label style="font-size:10px;font-weight:700;color:#9aa0a6;letter-spacing:.05em;text-transform:uppercase;display:block;margin-bottom:5px;">Contraseña</label>
         <div style="position:relative;">
           <input class="fi" type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password" style="padding-right:44px;letter-spacing:2px;">
           <button id="toggle-pass-btn" type="button" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#9aa0a6;font-size:18px;line-height:1;padding:4px;">👁</button>
         </div>
       </div>
-      <button id="login-btn" type="button" style="background:#1a73e8;color:#fff;border:none;border-radius:8px;padding:13px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;width:100%;">
+      <button id="login-btn" type="button" style="background:linear-gradient(135deg,#1a73e8,#1557b0);color:#fff;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;width:100%;box-shadow:0 4px 12px rgba(26,115,232,.4);">
         Iniciar sesión
       </button>
     </div>
@@ -178,32 +197,32 @@ tr:hover td{background:#f7f8ff;}
 <!-- APP -->
 <div id="app" class="hidden">
   <div class="topbar">
-    <div class="logo-mark">🖥</div>
-    <span class="proj-name">APP CAFIVER</span>
-    <button class="tnav on"  id="tnav-dashboard"   onclick="switchView('dashboard')">📊 Dashboard</button>
-    <button class="tnav"     id="tnav-inventario"  onclick="switchView('inventario')">🗃 Inventario</button>
-    <button class="tnav"     id="tnav-qr"          onclick="switchView('qr')">⬛ Códigos QR</button>
-    <button class="tnav"     id="tnav-reparaciones" onclick="switchView('reparaciones')">🔧 Reparaciones</button>
+    <div class="logo-wrap">
+      <div class="logo-mark">🖥</div>
+      <div><div class="proj-name">APP CAFIVER</div><div class="proj-sub">Inventario de equipos</div></div>
+    </div>
+    <button class="tnav on" id="tnav-dashboard"    onclick="switchView('dashboard')">📊 Dashboard</button>
+    <button class="tnav"    id="tnav-inventario"   onclick="switchView('inventario')">🗃 Inventario</button>
+    <button class="tnav"    id="tnav-qr"           onclick="switchView('qr')">⬛ Códigos QR</button>
+    <button class="tnav"    id="tnav-reparaciones" onclick="switchView('reparaciones')">🔧 Reparaciones</button>
     <div class="topbar-right">
       <div class="sync-pill ok" id="topbar-sync">
         <span style="width:6px;height:6px;border-radius:50%;background:currentColor;display:inline-block;"></span>
         <span id="topbar-sync-txt">En línea</span>
       </div>
-      <div class="user-pill" style="cursor:pointer;" onclick="openChPass()" title="Cambiar contraseña">
+      <div class="user-pill" onclick="openChPass()" title="Cambiar contraseña">
         <div class="cu-av" id="cur-av"></div>
         <span id="cur-nm"></span>
         <span style="font-size:10px;color:#9aa0a6;">🔐</span>
       </div>
-      <button class="btn btn-sm btn-blue" onclick="openFormEquipo()">+ Equipo</button>
-      <button class="btn btn-sm" onclick="window.print()">🖨</button>
+      <button class="btn btn-blue btn-sm" onclick="openFormEquipo()">+ Equipo</button>
       <button class="btn btn-sm" onclick="exportCSV()">⬇ CSV</button>
       <button class="btn btn-sm" onclick="doLogout()">Salir</button>
     </div>
   </div>
-
   <div id="view-dashboard"    class="view-wrap hidden"></div>
   <div id="view-inventario"   class="view-wrap hidden"></div>
-  <div id="view-qr"           class="view-wrap hidden" style="padding:0;"></div>
+  <div id="view-qr"           class="hidden" style="flex:1;overflow:auto;background:#eef2f7;"></div>
   <div id="view-reparaciones" class="view-wrap hidden"></div>
 </div>
 
@@ -213,26 +232,30 @@ tr:hover td{background:#f7f8ff;}
   <div class="dp-hd">
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">
       <div>
-        <div id="dp-title" style="font-size:15px;font-weight:700;margin-bottom:4px;"></div>
-        <div id="dp-sub"   style="font-size:12px;color:#5f6368;"></div>
+        <div id="dp-title" style="font-size:15px;font-weight:700;margin-bottom:4px;color:#1c1e21;"></div>
+        <div id="dp-sub" style="font-size:12px;color:#9aa0a6;display:flex;align-items:center;gap:6px;flex-wrap:wrap;"></div>
       </div>
-      <div style="display:flex;gap:4px;">
+      <div style="display:flex;gap:4px;flex-shrink:0;">
         <button class="icon-btn" onclick="editFromPanel()" title="Editar">✏️</button>
+        <button class="icon-btn" onclick="printFicha()" title="Imprimir ficha">🖨</button>
         <button class="icon-btn" onclick="deleteFromPanel()" title="Eliminar" style="color:#ea4335;">🗑</button>
         <button class="icon-btn" onclick="closePanel()">✕</button>
       </div>
     </div>
   </div>
   <div class="dp-tabs">
-    <button class="dp-tab on" id="dpt-info"       onclick="dpTab('info')">Información</button>
-    <button class="dp-tab"    id="dpt-red"        onclick="dpTab('red')">Red</button>
-    <button class="dp-tab"    id="dpt-compra"     onclick="dpTab('compra')">Compra</button>
-    <button class="dp-tab"    id="dpt-historial"  onclick="dpTab('historial')">Historial</button>
+    <button class="dp-tab on" id="dpt-info"      onclick="dpTab('info')">Información</button>
+    <button class="dp-tab"    id="dpt-red"       onclick="dpTab('red')">Red</button>
+    <button class="dp-tab"    id="dpt-compra"    onclick="dpTab('compra')">Compra</button>
+    <button class="dp-tab"    id="dpt-historial" onclick="dpTab('historial')">Historial</button>
   </div>
   <div class="dp-body" id="dp-body"></div>
 </div>
 
-<!-- FORM EQUIPO MODAL -->
+<!-- FICHA IMPRIMIBLE (solo visible al imprimir) -->
+<div class="ficha-qr" id="ficha-print"></div>
+
+<!-- FORM EQUIPO -->
 <div id="overlay-form" class="hidden" onclick="if(event.target===this)closeFormEquipo()">
   <div class="modal-card wide">
     <div class="modal-hd">
@@ -240,7 +263,6 @@ tr:hover td{background:#f7f8ff;}
       <button class="icon-btn" onclick="closeFormEquipo()">✕</button>
     </div>
     <div class="modal-body">
-
       <div class="form-section">Identificación general</div>
       <div class="af-g3">
         <div class="af"><label>Área *</label><input type="text" id="f-area" placeholder="Ej. Comercializadora Nacional"></div>
@@ -250,14 +272,18 @@ tr:hover td{background:#f7f8ff;}
       <div class="af-g3">
         <div class="af"><label>Ubicación</label><input type="text" id="f-ubicacion" placeholder="Ej. Autoservicio"></div>
         <div class="af"><label>Usuario de red</label><input type="text" id="f-usuario" placeholder="Ej. residenteanaquel"></div>
+        <div class="af"><label>Responsable</label><input type="text" id="f-responsable" placeholder="Nombre del responsable"></div>
+      </div>
+      <div class="af-g3">
+        <div class="af"><label>Puesto</label><input type="text" id="f-puesto" placeholder="Ej. Jefe de área"></div>
+        <div class="af"><label>Departamento</label><input type="text" id="f-depto" placeholder="Ej. TI"></div>
         <div class="af"><label>Estado físico</label>
           <select id="f-estado"><option>Bueno</option><option>Regular</option><option>Malo</option><option>Baja</option></select>
         </div>
       </div>
-
       <div class="form-section">Hardware</div>
       <div class="af-g3">
-        <div class="af"><label>Tipo de equipo *</label>
+        <div class="af"><label>Tipo *</label>
           <select id="f-tipo"><option>Desktop</option><option>Laptop</option><option>Servidor</option><option>Impresora</option><option>Otro</option></select>
         </div>
         <div class="af"><label>Marca *</label><input type="text" id="f-marca" placeholder="Ej. DELL"></div>
@@ -268,35 +294,31 @@ tr:hover td{background:#f7f8ff;}
         <div class="af"><label>Procesador</label><input type="text" id="f-cpu" placeholder="Ej. Dual Core E5400"></div>
         <div class="af"><label>RAM</label><input type="text" id="f-ram" placeholder="Ej. 4GB"></div>
       </div>
-
       <div class="form-section">Almacenamiento</div>
       <div class="af-g2">
-        <div class="af"><label>HDD — Marca</label><input type="text" id="f-hdd-marca" placeholder="Marca del disco duro"></div>
-        <div class="af"><label>HDD — Número de serie</label><input type="text" id="f-hdd-serie" placeholder="Serie del HDD"></div>
+        <div class="af"><label>HDD — Marca</label><input type="text" id="f-hdd-marca" placeholder="Marca del HDD"></div>
+        <div class="af"><label>HDD — N° de serie</label><input type="text" id="f-hdd-serie" placeholder="Serie del HDD"></div>
       </div>
       <div class="af-g2">
         <div class="af"><label>SSD — Marca</label><input type="text" id="f-ssd-marca" placeholder="Marca del SSD"></div>
-        <div class="af"><label>SSD — Número de serie</label><input type="text" id="f-ssd-serie" placeholder="Serie del SSD"></div>
+        <div class="af"><label>SSD — N° de serie</label><input type="text" id="f-ssd-serie" placeholder="Serie del SSD"></div>
       </div>
-
       <div class="form-section">Red</div>
       <div class="af-g3">
-        <div class="af"><label>Dirección IP</label><input type="text" id="f-ip" placeholder="Ej. 192.168.1.100"></div>
+        <div class="af"><label>Dirección IP</label><input type="text" id="f-ip" placeholder="192.168.1.100"></div>
         <div class="af"><label>MAC Ethernet</label><input type="text" id="f-mac-eth" placeholder="00-26-2D-24-FD-B9"></div>
         <div class="af"><label>MAC WiFi</label><input type="text" id="f-mac-wifi" placeholder="80-3F-5D-18-37-94"></div>
       </div>
-
       <div class="form-section">Software y accesos</div>
       <div class="af-g3">
-        <div class="af"><label>Sistema Operativo</label><input type="text" id="f-so" placeholder="Ej. Windows 10 Pro"></div>
+        <div class="af"><label>Sistema Operativo</label><input type="text" id="f-so" placeholder="Windows 10 Pro"></div>
         <div class="af"><label>Licencia Windows</label><input type="text" id="f-lic-win" placeholder="Clave de licencia"></div>
         <div class="af"><label>Password red</label><input type="password" id="f-pass" placeholder="Contraseña de red"></div>
       </div>
       <div class="af-g2">
         <div class="af"><label>Password VPN</label><input type="password" id="f-pass-vpn" placeholder="Contraseña VPN"></div>
-        <div class="af"><label>Pass (campo adicional)</label><input type="password" id="f-pass2" placeholder=""></div>
+        <div class="af"><label>AF (Activo Fijo)</label><input type="text" id="f-af" placeholder="N° de activo fijo"></div>
       </div>
-
       <div class="form-section">Compra y garantía</div>
       <div class="af-g3">
         <div class="af"><label>Fecha de compra</label><input type="date" id="f-fecha"></div>
@@ -307,10 +329,8 @@ tr:hover td{background:#f7f8ff;}
         <div class="af"><label>Precio ($)</label><input type="number" id="f-precio" placeholder="0.00" step="0.01"></div>
         <div class="af"><label>Factura</label><input type="text" id="f-factura" placeholder="Folio o 'No hay datos'"></div>
       </div>
-
       <div class="form-section">Observaciones</div>
       <div class="af"><textarea id="f-obs" placeholder="Notas, condiciones especiales, daños visibles..."></textarea></div>
-
     </div>
     <div class="modal-footer">
       <button class="btn" onclick="closeFormEquipo()">Cancelar</button>
@@ -319,16 +339,16 @@ tr:hover td{background:#f7f8ff;}
   </div>
 </div>
 
-<!-- FORM REPARACIÓN MODAL -->
-<div id="overlay-rep" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;z-index:400;" onclick="if(event.target===this)closeFormRep()">
-  <div class="modal-card" style="max-width:560px;">
+<!-- FORM REPARACIÓN -->
+<div id="overlay-rep" style="display:none;position:fixed;inset:0;background:rgba(15,20,35,.5);align-items:center;justify-content:center;z-index:400;backdrop-filter:blur(2px);" onclick="if(event.target===this)closeFormRep()">
+  <div class="modal-card" style="max-width:560px;margin:auto;">
     <div class="modal-hd">
       <h3 id="rep-modal-title">Nueva reparación</h3>
       <button class="icon-btn" onclick="closeFormRep()">✕</button>
     </div>
     <div class="modal-body">
       <div class="af"><label>Equipo *</label>
-        <select id="rep-equipo-sel" style="width:100%;font-size:12px;padding:7px 10px;border:1.5px solid #e0e2e6;border-radius:7px;outline:none;"></select>
+        <select id="rep-equipo-sel" style="width:100%;font-size:12px;padding:7px 10px;border:1.5px solid #e0e2e6;border-radius:8px;outline:none;"></select>
       </div>
       <div class="af-g2">
         <div class="af"><label>Fecha *</label><input type="date" id="rep-fecha"></div>
@@ -339,7 +359,7 @@ tr:hover td{background:#f7f8ff;}
         <div class="af"><label>Costo ($)</label><input type="number" id="rep-costo" placeholder="0.00" step="0.01"></div>
       </div>
       <div class="af"><label>Estado resultante</label>
-        <select id="rep-estado" style="width:100%;font-size:12px;padding:7px 10px;border:1.5px solid #e0e2e6;border-radius:7px;outline:none;">
+        <select id="rep-estado" style="width:100%;font-size:12px;padding:7px 10px;border:1.5px solid #e0e2e6;border-radius:8px;outline:none;">
           <option>Bueno</option><option>Regular</option><option>Malo</option><option>Baja</option>
         </select>
       </div>
@@ -356,22 +376,22 @@ tr:hover td{background:#f7f8ff;}
 
 <!-- CHANGE PASSWORD -->
 <div id="chpass-overlay" class="hidden" onclick="if(event.target===this)closeChPass()">
-  <div class="confirm-card" style="width:360px;">
+  <div class="confirm-card">
     <h3>🔐 Cambiar contraseña</h3>
-    <div id="chpass-error" style="display:none;background:#fce8e6;color:#c0392b;border-radius:6px;padding:8px 12px;font-size:12px;margin-bottom:10px;"></div>
+    <div id="chpass-error" style="display:none;background:#fce8e6;color:#c0392b;border-radius:8px;padding:8px 12px;font-size:12px;margin-bottom:10px;"></div>
     <div style="display:flex;flex-direction:column;gap:10px;">
       <div>
-        <label style="font-size:10px;font-weight:700;color:#5f6368;text-transform:uppercase;display:block;margin-bottom:4px;">Nueva contraseña</label>
-        <input type="password" id="chpass-new" placeholder="Mínimo 6 caracteres..." style="width:100%;font-size:13px;padding:8px 10px;border:1.5px solid #e0e2e6;border-radius:7px;outline:none;">
+        <label style="font-size:10px;font-weight:700;color:#9aa0a6;text-transform:uppercase;display:block;margin-bottom:4px;">Nueva contraseña</label>
+        <input type="password" id="chpass-new" placeholder="Mínimo 6 caracteres..." style="width:100%;font-size:13px;padding:8px 10px;border:1.5px solid #e0e2e6;border-radius:8px;outline:none;">
       </div>
       <div>
-        <label style="font-size:10px;font-weight:700;color:#5f6368;text-transform:uppercase;display:block;margin-bottom:4px;">Confirmar contraseña</label>
-        <input type="password" id="chpass-confirm" placeholder="Repite la contraseña..." style="width:100%;font-size:13px;padding:8px 10px;border:1.5px solid #e0e2e6;border-radius:7px;outline:none;">
+        <label style="font-size:10px;font-weight:700;color:#9aa0a6;text-transform:uppercase;display:block;margin-bottom:4px;">Confirmar contraseña</label>
+        <input type="password" id="chpass-confirm" placeholder="Repite la contraseña..." style="width:100%;font-size:13px;padding:8px 10px;border:1.5px solid #e0e2e6;border-radius:8px;outline:none;">
       </div>
     </div>
     <div class="confirm-btns" style="margin-top:14px;">
       <button class="btn" onclick="closeChPass()">Cancelar</button>
-      <button class="btn btn-blue" onclick="doChPass()">Cambiar contraseña</button>
+      <button class="btn btn-blue" onclick="doChPass()">Cambiar</button>
     </div>
   </div>
 </div>
@@ -391,89 +411,72 @@ tr:hover td{background:#f7f8ff;}
 <div id="toast"></div>
 
 <script>
-// ═══════════════════════════════════
-// FIREBASE — REEMPLAZA CON TUS DATOS
-// ═══════════════════════════════════
 firebase.initializeApp({
-  apiKey:            "AIzaSyAhqpgxj5PQwVI-_j-L3LzukN3lyRqSwiM",
-  authDomain:        "gantttracker-cafiver.firebaseapp.com",
-  projectId:         "gantttracker-cafiver",
-  storageBucket:     "gantttracker-cafiver.firebasestorage.app",
-  messagingSenderId: "210970686391",
-  appId:             "1:210970686391:web:8e59db366e4d8430202e32"
+  apiKey:"AIzaSyAhqpgxj5PQwVI-_j-L3LzukN3lyRqSwiM",
+  authDomain:"gantttracker-cafiver.firebaseapp.com",
+  projectId:"gantttracker-cafiver",
+  storageBucket:"gantttracker-cafiver.firebasestorage.app",
+  messagingSenderId:"210970686391",
+  appId:"1:210970686391:web:8e59db366e4d8430202e32"
 });
-var db   = firebase.firestore();
-var auth = firebase.auth();
+var db=firebase.firestore(), auth=firebase.auth();
 
-// ═══════════════════════════════════
-// USUARIOS
-// ═══════════════════════════════════
-var USER_DIR = {
-  'aosorio@cafiver.com.mx':        {name:'Alan Osorio Cruz',      color:'#1a73e8'},
-  'vlopez@cafiver.com.mx':         {name:'Valery Lopez Olmedo',   color:'#34a853'},
-  'soportetec@cafiver.com.mx':     {name:'Daniela Gomez Aleluya', color:'#f9ab00'},
-  'soportetecnico@cafiver.com.mx': {name:'Rafael Aguila',         color:'#ea4335'},
-  'ramaya@cafiver.com.mx':         {name:'Roberto Amaya',         color:'#9c27b0'},
-  'usuario1@cafiver.com.mx':       {name:'Usuario1',              color:'#00bcd4'},
-  'usuario2@cafiver.com.mx':       {name:'Usuario2',              color:'#ff6d00'}
+var USER_DIR={
+  'aosorio@cafiver.com.mx':{name:'Alan Osorio Cruz',color:'#1a73e8'},
+  'vlopez@cafiver.com.mx':{name:'Valery Lopez Olmedo',color:'#34a853'},
+  'soportetec@cafiver.com.mx':{name:'Daniela Gomez Aleluya',color:'#f9ab00'},
+  'soportetecnico@cafiver.com.mx':{name:'Rafael Aguila',color:'#ea4335'},
+  'ramaya@cafiver.com.mx':{name:'Roberto Amaya',color:'#9c27b0'},
+  'usuario1@cafiver.com.mx':{name:'Usuario1',color:'#00bcd4'},
+  'usuario2@cafiver.com.mx':{name:'Usuario2',color:'#ff6d00'}
 };
 
-// ═══════════════════════════════════
-// STATE
-// ═══════════════════════════════════
-var equipos=[], reparaciones=[];
-var curUser=null, curView='dashboard', openEquipoId=null, editingId=null, dpCurTab='info';
-var sortCol='', sortAsc=true;
+var equipos=[],reparaciones=[];
+var curUser=null,curView='dashboard',openEquipoId=null,editingId=null,dpCurTab='info';
+var sortCol='',sortAsc=true;
+var invFilter={q:'',tipo:'',estado:'',plaza:'',area:''};
 
-// ═══════════════════════════════════
-// HELPERS
-// ═══════════════════════════════════
-function uid(){ return 'EQ'+Date.now().toString(36).toUpperCase()+Math.random().toString(36).slice(2,5).toUpperCase(); }
-function ini(n){ return (n||'?').split(' ').map(function(w){return w[0]||'';}).join('').toUpperCase().slice(0,2); }
-function nowStr(){ return new Date().toLocaleString('es-MX',{dateStyle:'short',timeStyle:'short'}); }
-function setSyncUI(state,msg){ var p=document.getElementById('topbar-sync'),t=document.getElementById('topbar-sync-txt'); if(p)p.className='sync-pill '+state; if(t)t.textContent=msg; }
-function toast(msg){ var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(function(){ t.classList.remove('show'); },3000); }
-function fmt$(n){ return n?'$'+Number(n).toLocaleString('es-MX',{minimumFractionDigits:2}):'—'; }
-function cleanObj(obj){ return JSON.parse(JSON.stringify(obj,function(k,v){ return v===undefined?null:v; })); }
-function tipoPill(t){ var map={Desktop:'pill-desktop',Laptop:'pill-laptop',Servidor:'pill-servidor',Impresora:'pill-impresora',Otro:'pill-otro'}; return '<span class="pill '+(map[t]||'pill-otro')+'">'+t+'</span>'; }
-function estadoPill(e){ var map={Bueno:'pill-bueno',Regular:'pill-regular',Malo:'pill-malo',Baja:'pill-baja'}; return '<span class="pill '+(map[e]||'pill-otro')+'">'+e+'</span>'; }
+function uid(){return 'EQ'+Date.now().toString(36).toUpperCase()+Math.random().toString(36).slice(2,5).toUpperCase();}
+function ini(n){return (n||'?').split(' ').map(function(w){return w[0]||'';}).join('').toUpperCase().slice(0,2);}
+function nowStr(){return new Date().toLocaleString('es-MX',{dateStyle:'short',timeStyle:'short'});}
+function setSyncUI(s,m){var p=document.getElementById('topbar-sync'),t=document.getElementById('topbar-sync-txt');if(p)p.className='sync-pill '+s;if(t)t.textContent=m;}
+function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('show');},3000);}
+function fmt$(n){return n?'$'+Number(n).toLocaleString('es-MX',{minimumFractionDigits:2}):'—';}
+function cleanObj(o){return JSON.parse(JSON.stringify(o,function(k,v){return v===undefined?null:v;}));}
+function tipoPill(t){var m={Desktop:'pill-desktop',Laptop:'pill-laptop',Servidor:'pill-servidor',Impresora:'pill-impresora',Otro:'pill-otro'};return '<span class="pill '+(m[t]||'pill-otro')+'">'+t+'</span>';}
+function estadoPill(e){var m={Bueno:'pill-bueno',Regular:'pill-regular',Malo:'pill-malo',Baja:'pill-baja'};return '<span class="pill '+(m[e]||'pill-otro')+'">'+e+'</span>';}
+function row(k,v){return '<div class="dp-row"><div class="dp-key">'+k+'</div><div class="dp-val">'+(v||'—')+'</div></div>';}
 
-// ═══════════════════════════════════
 // LOGIN
-// ═══════════════════════════════════
-document.getElementById('login-btn').addEventListener('click', doLogin);
-document.getElementById('login-pass').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
-document.getElementById('login-email').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
-document.getElementById('toggle-pass-btn').addEventListener('click', function(){
-  var inp=document.getElementById('login-pass');
-  inp.type=inp.type==='password'?'text':'password';
-  this.textContent=inp.type==='password'?'👁':'🙈';
-});
-function showLoginError(msg){ var el=document.getElementById('login-error'); el.textContent=msg; el.style.display='block'; }
+document.getElementById('login-btn').addEventListener('click',doLogin);
+document.getElementById('login-pass').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
+document.getElementById('login-email').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
+document.getElementById('toggle-pass-btn').addEventListener('click',function(){var i=document.getElementById('login-pass');i.type=i.type==='password'?'text':'password';this.textContent=i.type==='password'?'👁':'🙈';});
+function showLoginError(m){var el=document.getElementById('login-error');el.textContent=m;el.style.display='block';}
 function doLogin(){
   var email=(document.getElementById('login-email').value||'').trim().toLowerCase();
   var pass=(document.getElementById('login-pass').value||'').trim();
   var btn=document.getElementById('login-btn');
   document.getElementById('login-error').style.display='none';
-  if(!email){ showLoginError('Escribe tu correo.'); return; }
-  if(!pass){ showLoginError('Escribe tu contraseña.'); return; }
-  btn.textContent='Entrando...'; btn.disabled=true; btn.style.opacity='.7';
+  if(!email){showLoginError('Escribe tu correo.');return;}
+  if(!pass){showLoginError('Escribe tu contraseña.');return;}
+  btn.textContent='Entrando...';btn.disabled=true;btn.style.opacity='.7';
   auth.signInWithEmailAndPassword(email,pass)
-    .then(function(cred){
-      var profile=USER_DIR[email]||{name:email.split('@')[0],color:'#1a73e8'};
-      curUser={uid:cred.user.uid,email:email,name:profile.name,color:profile.color};
+    .then(function(c){
+      var p=USER_DIR[email]||{name:email.split('@')[0],color:'#1a73e8'};
+      curUser={uid:c.user.uid,email:email,name:p.name,color:p.color};
       enterApp();
     })
     .catch(function(e){
-      btn.textContent='Iniciar sesión'; btn.disabled=false; btn.style.opacity='1';
-      var msg='Correo o contraseña incorrectos.';
-      if(e.code==='auth/user-not-found') msg='Usuario no encontrado.';
-      if(e.code==='auth/wrong-password') msg='Contraseña incorrecta.';
-      if(e.code==='auth/invalid-credential') msg='Correo o contraseña incorrectos.';
-      if(e.code==='auth/invalid-email') msg='Formato de correo inválido.';
-      if(e.code==='auth/too-many-requests') msg='Demasiados intentos. Espera unos minutos.';
-      if(e.code==='auth/network-request-failed') msg='Sin conexión a internet.';
-      showLoginError(msg);
+      btn.textContent='Iniciar sesión';btn.disabled=false;btn.style.opacity='1';
+      var m='Correo o contraseña incorrectos.';
+      if(e.code==='auth/user-not-found')m='Usuario no encontrado.';
+      if(e.code==='auth/wrong-password')m='Contraseña incorrecta.';
+      if(e.code==='auth/invalid-credential')m='Correo o contraseña incorrectos.';
+      if(e.code==='auth/invalid-email')m='Formato de correo inválido.';
+      if(e.code==='auth/too-many-requests')m='Demasiados intentos. Espera unos minutos.';
+      if(e.code==='auth/network-request-failed')m='Sin conexión a internet.';
+      showLoginError(m);
     });
 }
 function enterApp(){
@@ -481,7 +484,7 @@ function enterApp(){
   document.getElementById('app').classList.remove('hidden');
   document.body.classList.add('app-mode');
   var av=document.getElementById('cur-av');
-  av.textContent=ini(curUser.name); av.style.background=curUser.color+'22'; av.style.color=curUser.color;
+  av.textContent=ini(curUser.name);av.style.background=curUser.color+'22';av.style.color=curUser.color;
   document.getElementById('cur-nm').textContent=curUser.name;
   document.getElementById('login-btn').textContent='Iniciar sesión';
   document.getElementById('login-btn').disabled=false;
@@ -490,7 +493,7 @@ function enterApp(){
 }
 function doLogout(){
   auth.signOut().then(function(){
-    curUser=null; equipos=[]; reparaciones=[]; closePanel();
+    curUser=null;equipos=[];reparaciones=[];closePanel();
     document.getElementById('app').classList.add('hidden');
     document.getElementById('login-screen').classList.remove('hidden');
     document.body.classList.remove('app-mode');
@@ -500,476 +503,423 @@ function doLogout(){
   });
 }
 
-// ═══════════════════════════════════
 // LOAD DATA
-// ═══════════════════════════════════
 function loadAppData(){
   setSyncUI('saving','Cargando...');
-  // Real-time equipos
   db.collection('equipos').onSnapshot(function(s){
-    equipos=s.docs.map(function(d){ return d.data(); });
-    if(curView==='dashboard')   renderDashboard();
-    if(curView==='inventario')  renderInventario();
-    if(curView==='qr')          renderQR();
+    equipos=s.docs.map(function(d){return d.data();});
+    if(curView==='dashboard')renderDashboard();
+    if(curView==='inventario')renderInventario();
+    if(curView==='qr')renderQR();
     setSyncUI('ok','En línea ✓');
-  }, function(e){ setSyncUI('error','Error'); });
-  // Real-time reparaciones
+  },function(){setSyncUI('error','Error');});
   db.collection('reparaciones').onSnapshot(function(s){
-    reparaciones=s.docs.map(function(d){ return d.data(); });
-    if(curView==='reparaciones') renderReparaciones();
+    reparaciones=s.docs.map(function(d){return d.data();});
+    if(curView==='reparaciones')renderReparaciones();
   });
-  // Seed demo si está vacío
-  db.collection('equipos').get().then(function(s){
-    if(s.empty){
-      var demo=[
-        {id:'EQ001',area:'Comercializadora Nacional',plaza:'Ixtaczoquitlán',tipo:'Desktop',marca:'DELL',modelo:'Vostro 230',nombre:'ResidenteAS',ubicacion:'Autoservicio',usuario:'residenteanaquel',serie:'',cpu:'Dual Core E5400',ram:'4GB',hdd_marca:'',hdd_serie:'',ssd_marca:'',ssd_serie:'',ip:'192.118.180',mac_eth:'00-26-2D-24-FD-B9',mac_wifi:'80-3F-5D-18-37-94',so:'Windows 10 Pro',lic_win:'',pass:'1234',pass_vpn:'',pass2:'',fecha:'2010-04-30',garantia:'Vencida',proveedor:'',precio:9250,factura:'No hay datos',estado:'Bueno',obs:'',updBy:'',updTs:''},
-        {id:'EQ002',area:'Área Administrativa',plaza:'Ixtaczoquitlán',tipo:'Laptop',marca:'DELL',modelo:'Vostro 3500',nombre:'',ubicacion:'',usuario:'',serie:'',cpu:'',ram:'',hdd_marca:'',hdd_serie:'',ssd_marca:'',ssd_serie:'',ip:'',mac_eth:'',mac_wifi:'',so:'',lic_win:'',pass:'',pass_vpn:'',pass2:'',fecha:'2011-07-07',garantia:'',proveedor:'',precio:0,factura:'No hay datos',estado:'Regular',obs:'',updBy:'',updTs:''}
-      ];
-      demo.forEach(function(e){ db.collection('equipos').doc(e.id).set(e); });
-    }
-    switchView('dashboard'); checkQRHash();
-  });
+  switchView('dashboard');checkQRHash();
 }
-
-function fbSave(equipo){
+function fbSave(e){
   setSyncUI('saving','Guardando...');
-  var c=cleanObj(equipo);
-  db.collection('equipos').doc(c.id).set(c)
-    .then(function(){ setSyncUI('ok','En línea ✓'); })
-    .catch(function(e){ setSyncUI('error','Error'); toast('⚠️ '+e.message); });
+  db.collection('equipos').doc(e.id).set(cleanObj(e))
+    .then(function(){setSyncUI('ok','En línea ✓');})
+    .catch(function(e){setSyncUI('error','Error');toast('⚠️ '+e.message);});
 }
 
-// ═══════════════════════════════════
 // VIEW SWITCH
-// ═══════════════════════════════════
 function switchView(v){
   curView=v;
   ['dashboard','inventario','qr','reparaciones'].forEach(function(x){
     document.getElementById('view-'+x).classList.toggle('hidden',x!==v);
-    var btn=document.getElementById('tnav-'+x); if(btn) btn.classList.toggle('on',x===v);
+    var b=document.getElementById('tnav-'+x);if(b)b.classList.toggle('on',x===v);
   });
-  if(v==='dashboard')    renderDashboard();
-  if(v==='inventario')   renderInventario();
-  if(v==='qr')           renderQR();
-  if(v==='reparaciones') renderReparaciones();
+  if(v==='dashboard')renderDashboard();
+  if(v==='inventario')renderInventario();
+  if(v==='qr')renderQR();
+  if(v==='reparaciones')renderReparaciones();
 }
 
-// ═══════════════════════════════════
 // DASHBOARD
-// ═══════════════════════════════════
 function renderDashboard(){
-  var w=document.getElementById('view-dashboard'); if(!w) return;
+  var w=document.getElementById('view-dashboard');if(!w)return;
   var total=equipos.length;
   var byTipo={Desktop:0,Laptop:0,Servidor:0,Impresora:0,Otro:0};
   var byEstado={Bueno:0,Regular:0,Malo:0,Baja:0};
   var totalInv=0;
-  equipos.forEach(function(e){ byTipo[e.tipo]=(byTipo[e.tipo]||0)+1; byEstado[e.estado]=(byEstado[e.estado]||0)+1; totalInv+=parseFloat(e.precio)||0; });
+  equipos.forEach(function(e){byTipo[e.tipo]=(byTipo[e.tipo]||0)+1;byEstado[e.estado]=(byEstado[e.estado]||0)+1;totalInv+=parseFloat(e.precio)||0;});
+  // Areas breakdown
+  var areas={};
+  equipos.forEach(function(e){areas[e.area]=(areas[e.area]||0)+1;});
+  var areaRows=Object.keys(areas).sort().map(function(a){
+    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #f0f2f5;">'
+      +'<span style="font-size:12px;">'+a+'</span>'
+      +'<span style="font-size:12px;font-weight:600;color:#1a73e8;">'+areas[a]+' equipo'+(areas[a]!==1?'s':'')+'</span>'
+      +'</div>';
+  }).join('');
   w.innerHTML=
-    '<h2 style="font-size:16px;font-weight:700;margin-bottom:16px;">Dashboard — Inventario de equipo</h2>'+
-    '<div class="stats-grid">'+
-      '<div class="stat-card"><div class="lbl">Total equipos</div><div class="val blue">'+total+'</div></div>'+
-      '<div class="stat-card"><div class="lbl">Buen estado</div><div class="val green">'+(byEstado.Bueno||0)+'</div></div>'+
-      '<div class="stat-card"><div class="lbl">Regular</div><div class="val amber">'+(byEstado.Regular||0)+'</div></div>'+
-      '<div class="stat-card"><div class="lbl">Malo / Baja</div><div class="val red">'+((byEstado.Malo||0)+(byEstado.Baja||0))+'</div></div>'+
-      '<div class="stat-card"><div class="lbl">Desktops</div><div class="val">'+(byTipo.Desktop||0)+'</div></div>'+
-      '<div class="stat-card"><div class="lbl">Laptops</div><div class="val">'+(byTipo.Laptop||0)+'</div></div>'+
-      '<div class="stat-card"><div class="lbl">Servidores</div><div class="val">'+(byTipo.Servidor||0)+'</div></div>'+
-      '<div class="stat-card"><div class="lbl">Reparaciones</div><div class="val">'+reparaciones.length+'</div></div>'+
-      '<div class="stat-card"><div class="lbl">Valor total inv.</div><div class="val blue" style="font-size:16px;">'+fmt$(totalInv)+'</div></div>'+
-    '</div>'+
-    '<div class="tbl-box"><div class="tbl-hdr"><span>Últimos equipos registrados</span></div>'+
-    '<div style="overflow-x:auto;"><table><thead><tr><th>ID</th><th>Área</th><th>Plaza</th><th>Tipo</th><th>Marca / Modelo</th><th>Estado</th></tr></thead><tbody>'+
-    equipos.slice(-8).reverse().map(function(e){
-      return '<tr style="cursor:pointer;" ondblclick="openPanel(\''+e.id+'\')">'+'<td style="font-family:monospace;font-size:11px;">'+e.id+'</td><td>'+e.area+'</td><td>'+e.plaza+'</td><td>'+tipoPill(e.tipo)+'</td><td><b>'+e.marca+'</b> '+e.modelo+'</td><td>'+estadoPill(e.estado)+'</td></tr>';
-    }).join('')+'</tbody></table></div></div>';
+    '<div class="dash-title">Dashboard — Inventario de equipos</div>'
+    +'<div class="dash-sub">'+new Date().toLocaleDateString('es-MX',{weekday:'long',year:'numeric',month:'long',day:'numeric'})+'</div>'
+    +'<div class="stats-grid">'
+    +'<div class="stat-card"><div class="lbl">Total equipos</div><div class="val blue">'+total+'</div><div class="trend">activos en inventario</div></div>'
+    +'<div class="stat-card"><div class="lbl">Buen estado</div><div class="val green">'+(byEstado.Bueno||0)+'</div><div class="trend">'+Math.round(((byEstado.Bueno||0)/Math.max(total,1))*100)+'% del total</div></div>'
+    +'<div class="stat-card"><div class="lbl">Regular</div><div class="val amber">'+(byEstado.Regular||0)+'</div><div class="trend">requieren atención</div></div>'
+    +'<div class="stat-card"><div class="lbl">Malo / Baja</div><div class="val red">'+((byEstado.Malo||0)+(byEstado.Baja||0))+'</div><div class="trend">para reemplazo</div></div>'
+    +'<div class="stat-card"><div class="lbl">Desktops</div><div class="val">'+(byTipo.Desktop||0)+'</div></div>'
+    +'<div class="stat-card"><div class="lbl">Laptops</div><div class="val">'+(byTipo.Laptop||0)+'</div></div>'
+    +'<div class="stat-card"><div class="lbl">Servidores</div><div class="val">'+(byTipo.Servidor||0)+'</div></div>'
+    +'<div class="stat-card"><div class="lbl">Reparaciones</div><div class="val">'+reparaciones.length+'</div></div>'
+    +'<div class="stat-card"><div class="lbl">Valor inventario</div><div class="val blue" style="font-size:17px;">'+fmt$(totalInv)+'</div></div>'
+    +'</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">'
+    +'<div class="tbl-box"><div class="tbl-hdr"><span class="tbl-hdr-title">📍 Equipos por área</span></div><div style="padding:8px 16px;">'+areaRows+'</div></div>'
+    +'<div class="tbl-box"><div class="tbl-hdr"><span class="tbl-hdr-title">🕐 Últimos registros</span></div>'
+    +'<div style="overflow-x:auto;"><table><thead><tr><th>ID</th><th>Marca/Modelo</th><th>Plaza</th><th>Estado</th></tr></thead><tbody>'
+    +equipos.slice(-6).reverse().map(function(e){
+      return '<tr style="cursor:pointer;" ondblclick="openPanel(\''+e.id+'\')">'
+        +'<td style="font-family:monospace;font-size:10px;color:#9aa0a6;">'+e.id+'</td>'
+        +'<td><b>'+e.marca+'</b> '+e.modelo+'</td>'
+        +'<td style="font-size:11px;">'+e.plaza+'</td>'
+        +'<td>'+estadoPill(e.estado)+'</td></tr>';
+    }).join('')+'</tbody></table></div></div>'
+    +'</div>';
 }
 
-// ═══════════════════════════════════
-// INVENTARIO TABLE
-// ═══════════════════════════════════
-var invFilter={q:'',tipo:'',estado:'',plaza:''};
-
+// INVENTARIO
 function renderInventario(){
-  var w=document.getElementById('view-inventario'); if(!w) return;
+  var w=document.getElementById('view-inventario');if(!w)return;
   var data=equipos.filter(function(e){
     var q=invFilter.q.toLowerCase();
-    if(q&&!(e.nombre+e.modelo+e.marca+e.plaza+e.area+e.serie+e.ip+e.so+e.usuario).toLowerCase().includes(q)) return false;
-    if(invFilter.tipo&&e.tipo!==invFilter.tipo) return false;
-    if(invFilter.estado&&e.estado!==invFilter.estado) return false;
-    if(invFilter.plaza&&e.plaza!==invFilter.plaza) return false;
+    if(q&&!(e.nombre+e.modelo+e.marca+e.plaza+e.area+e.serie+e.ip+e.so+e.usuario+e.responsable).toLowerCase().includes(q))return false;
+    if(invFilter.tipo&&e.tipo!==invFilter.tipo)return false;
+    if(invFilter.estado&&e.estado!==invFilter.estado)return false;
+    if(invFilter.plaza&&e.plaza!==invFilter.plaza)return false;
+    if(invFilter.area&&e.area!==invFilter.area)return false;
     return true;
   });
-  if(sortCol){ data.sort(function(a,b){ var av=a[sortCol]||'',bv=b[sortCol]||''; return sortAsc?(av<bv?-1:av>bv?1:0):(av>bv?-1:av<bv?1:0); }); }
-  var plazas=[]; equipos.forEach(function(e){ if(plazas.indexOf(e.plaza)<0&&e.plaza) plazas.push(e.plaza); });
+  if(sortCol){data.sort(function(a,b){var av=a[sortCol]||'',bv=b[sortCol]||'';return sortAsc?(av<bv?-1:av>bv?1:0):(av>bv?-1:av<bv?1:0);});}
+  var plazas=[],areas=[];
+  equipos.forEach(function(e){
+    if(plazas.indexOf(e.plaza)<0&&e.plaza)plazas.push(e.plaza);
+    if(areas.indexOf(e.area)<0&&e.area)areas.push(e.area);
+  });
+  plazas.sort();areas.sort();
   w.innerHTML=
-    '<div class="tbl-box">'+
-    '<div class="tbl-hdr">'+
-      '<span>'+data.length+' equipo'+(data.length!==1?'s':'')+'</span>'+
-      '<div class="tbl-tools">'+
-        '<input class="fi-sm" type="text" placeholder="Buscar..." value="'+invFilter.q+'" oninput="invFilter.q=this.value;renderInventario()" style="width:180px;">'+
-        '<select class="fi-sm" onchange="invFilter.tipo=this.value;renderInventario()">'+
-          '<option value="">Todos los tipos</option>'+
-          ['Desktop','Laptop','Servidor','Impresora','Otro'].map(function(t){ return '<option value="'+t+'"'+(invFilter.tipo===t?' selected':'')+'>'+t+'</option>'; }).join('')+
-        '</select>'+
-        '<select class="fi-sm" onchange="invFilter.estado=this.value;renderInventario()">'+
-          '<option value="">Todos los estados</option>'+
-          ['Bueno','Regular','Malo','Baja'].map(function(t){ return '<option value="'+t+'"'+(invFilter.estado===t?' selected':'')+'>'+t+'</option>'; }).join('')+
-        '</select>'+
-        '<select class="fi-sm" onchange="invFilter.plaza=this.value;renderInventario()">'+
-          '<option value="">Todas las plazas</option>'+
-          plazas.map(function(p){ return '<option value="'+p+'"'+(invFilter.plaza===p?' selected':'')+'>'+p+'</option>'; }).join('')+
-        '</select>'+
-        '<button class="btn btn-blue btn-sm" onclick="openFormEquipo()">+ Nuevo</button>'+
-      '</div>'+
-    '</div>'+
-    '<div style="overflow-x:auto;"><table>'+
-    '<thead><tr>'+
-      ['id','tipo','area','plaza','marca','nombre','cpu','ram','ip','so','estado',''].map(function(c,i){
-        var lbl=['ID','Tipo','Área','Plaza','Marca/Modelo','Nombre equipo','Procesador','RAM','IP','S.O.','Estado','Acciones'][i];
-        if(!c) return '<th>'+lbl+'</th>';
-        return '<th onclick="sortBy(\''+c+'\')" style="cursor:pointer;">'+lbl+(sortCol===c?(sortAsc?' ▲':' ▼'):' ⇅')+'</th>';
-      }).join('')+
-    '</tr></thead><tbody>'+
-    (data.length?data.map(function(e){
+    '<div class="tbl-box">'
+    +'<div class="tbl-hdr">'
+    +'<span class="tbl-hdr-title">'+data.length+' equipo'+(data.length!==1?'s':'')+'</span>'
+    +'<div class="tbl-tools">'
+    +'<input class="fi-sm" type="text" placeholder="🔍 Buscar..." value="'+invFilter.q+'" oninput="invFilter.q=this.value;renderInventario()" style="width:190px;">'
+    +'<select class="fi-sm" onchange="invFilter.area=this.value;renderInventario()">'
+    +'<option value="">Todas las áreas</option>'
+    +areas.map(function(a){return '<option value="'+a+'"'+(invFilter.area===a?' selected':'')+'>'+a+'</option>';}).join('')
+    +'</select>'
+    +'<select class="fi-sm" onchange="invFilter.plaza=this.value;renderInventario()">'
+    +'<option value="">Todas las plazas</option>'
+    +plazas.map(function(p){return '<option value="'+p+'"'+(invFilter.plaza===p?' selected':'')+'>'+p+'</option>';}).join('')
+    +'</select>'
+    +'<select class="fi-sm" onchange="invFilter.tipo=this.value;renderInventario()">'
+    +'<option value="">Todos los tipos</option>'
+    +['Desktop','Laptop','Servidor','Impresora','Otro'].map(function(t){return '<option value="'+t+'"'+(invFilter.tipo===t?' selected':'')+'>'+t+'</option>';}).join('')
+    +'</select>'
+    +'<select class="fi-sm" onchange="invFilter.estado=this.value;renderInventario()">'
+    +'<option value="">Todos los estados</option>'
+    +['Bueno','Regular','Malo','Baja'].map(function(t){return '<option value="'+t+'"'+(invFilter.estado===t?' selected':'')+'>'+t+'</option>';}).join('')
+    +'</select>'
+    +'<button class="btn btn-blue btn-sm" onclick="openFormEquipo()">+ Nuevo</button>'
+    +'</div></div>'
+    +'<div style="overflow-x:auto;"><table>'
+    +'<thead><tr>'
+    +['id','tipo','area','plaza','marca','nombre','responsable','cpu','ram','ip','so','estado',''].map(function(c,i){
+      var lbl=['ID','Tipo','Área','Plaza','Marca/Modelo','Nombre equipo','Responsable','Procesador','RAM','IP','S.O.','Estado','Acciones'][i];
+      if(!c)return '<th>'+lbl+'</th>';
+      return '<th onclick="sortBy(\''+c+'\')" >'+lbl+(sortCol===c?(sortAsc?' ▲':' ▼'):' ⇅')+'</th>';
+    }).join('')
+    +'</tr></thead><tbody>'
+    +(data.length?data.map(function(e){
       return '<tr style="cursor:pointer;" ondblclick="openPanel(\''+e.id+'\')">'
         +'<td style="font-family:monospace;font-size:10px;color:#9aa0a6;">'+e.id+'</td>'
         +'<td>'+tipoPill(e.tipo)+'</td>'
-        +'<td style="max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+e.area+'</td>'
-        +'<td style="white-space:nowrap;">'+e.plaza+'</td>'
-        +'<td><b style="font-weight:600;">'+e.marca+'</b> '+e.modelo+'</td>'
-        +'<td>'+( e.nombre||'—')+'</td>'
-        +'<td style="font-size:11px;">'+( e.cpu||'—')+'</td>'
-        +'<td style="font-size:11px;">'+( e.ram||'—')+'</td>'
-        +'<td style="font-family:monospace;font-size:11px;">'+( e.ip||'—')+'</td>'
-        +'<td style="font-size:11px;">'+( e.so||'—')+'</td>'
+        +'<td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;">'+e.area+'</td>'
+        +'<td style="white-space:nowrap;font-size:11px;">'+e.plaza+'</td>'
+        +'<td><b style="font-weight:600;">'+e.marca+'</b> <span style="color:#9aa0a6;">'+e.modelo+'</span></td>'
+        +'<td>'+(e.nombre||'—')+'</td>'
+        +'<td style="font-size:11px;color:#9aa0a6;">'+(e.responsable||'—')+'</td>'
+        +'<td style="font-size:11px;">'+(e.cpu||'—')+'</td>'
+        +'<td style="font-size:11px;">'+(e.ram||'—')+'</td>'
+        +'<td style="font-family:monospace;font-size:11px;">'+(e.ip||'—')+'</td>'
+        +'<td style="font-size:11px;">'+(e.so||'—')+'</td>'
         +'<td>'+estadoPill(e.estado)+'</td>'
-        +'<td><div style="display:flex;gap:4px;">'
-          +'<button class="icon-btn" title="Ver detalle" onclick="event.stopPropagation();openPanel(\''+e.id+'\')">👁</button>'
-          +'<button class="icon-btn" title="Editar"      onclick="event.stopPropagation();editEquipo(\''+e.id+'\')">✏️</button>'
-          +'<button class="icon-btn" title="Reparación"  onclick="event.stopPropagation();openFormRepFor(\''+e.id+'\')">🔧</button>'
-          +'<button class="icon-btn" title="Eliminar"    onclick="event.stopPropagation();deleteEquipo(\''+e.id+'\')">🗑</button>'
-          +'</div></td>'
+        +'<td><div style="display:flex;gap:3px;">'
+        +'<button class="icon-btn" title="Ver" onclick="event.stopPropagation();openPanel(\''+e.id+'\')">👁</button>'
+        +'<button class="icon-btn" title="Editar" onclick="event.stopPropagation();editEquipo(\''+e.id+'\')">✏️</button>'
+        +'<button class="icon-btn" title="Reparación" onclick="event.stopPropagation();openFormRepFor(\''+e.id+'\')">🔧</button>'
+        +'<button class="icon-btn" title="Imprimir ficha" onclick="event.stopPropagation();printFichaId(\''+e.id+'\')">🖨</button>'
+        +'<button class="icon-btn" title="Eliminar" onclick="event.stopPropagation();deleteEquipo(\''+e.id+'\')" style="color:#ea4335;">🗑</button>'
+        +'</div></td>'
         +'</tr>';
-    }).join(''):'<tr><td colspan="12" class="empty-state">No hay equipos registrados</td></tr>')+
-    '</tbody></table></div></div>';
+    }).join(''):'<tr><td colspan="13" class="empty-state">No hay equipos que coincidan</td></tr>')
+    +'</tbody></table></div></div>';
 }
+function sortBy(col){if(sortCol===col)sortAsc=!sortAsc;else{sortCol=col;sortAsc=true;}renderInventario();}
 
-function sortBy(col){ if(sortCol===col)sortAsc=!sortAsc; else{sortCol=col;sortAsc=true;} renderInventario(); }
-
-// ═══════════════════════════════════
 // FORM EQUIPO
-// ═══════════════════════════════════
-function openFormEquipo(){
-  editingId=null;
-  document.getElementById('form-modal-title').textContent='Nuevo equipo';
-  clearForm();
-  document.getElementById('overlay-form').classList.remove('hidden');
-}
-function editEquipo(id){
-  var e=equipos.find(function(x){ return x.id===id; }); if(!e) return;
-  editingId=id;
-  document.getElementById('form-modal-title').textContent='Editar: '+(e.nombre||e.modelo);
-  fillForm(e);
-  document.getElementById('overlay-form').classList.remove('hidden');
-}
-function closeFormEquipo(){ document.getElementById('overlay-form').classList.add('hidden'); editingId=null; }
-
+function openFormEquipo(){editingId=null;document.getElementById('form-modal-title').textContent='Nuevo equipo';clearForm();document.getElementById('overlay-form').classList.remove('hidden');}
+function editEquipo(id){var e=equipos.find(function(x){return x.id===id;});if(!e)return;editingId=id;document.getElementById('form-modal-title').textContent='Editar: '+(e.nombre||e.modelo);fillForm(e);document.getElementById('overlay-form').classList.remove('hidden');}
+function closeFormEquipo(){document.getElementById('overlay-form').classList.add('hidden');editingId=null;}
 function clearForm(){
-  var ids=['area','plaza','nombre','ubicacion','usuario','marca','modelo','serie','cpu','ram','hdd-marca','hdd-serie','ssd-marca','ssd-serie','ip','mac-eth','mac-wifi','so','lic-win','pass','pass-vpn','pass2','fecha','garantia','proveedor','factura','obs'];
-  ids.forEach(function(id){ var el=document.getElementById('f-'+id); if(el) el.value=''; });
+  ['area','plaza','nombre','ubicacion','usuario','responsable','puesto','depto','marca','modelo','serie','cpu','ram','hdd-marca','hdd-serie','ssd-marca','ssd-serie','ip','mac-eth','mac-wifi','so','lic-win','pass','pass-vpn','af','fecha','garantia','proveedor','factura','obs'].forEach(function(id){var el=document.getElementById('f-'+id);if(el)el.value='';});
   document.getElementById('f-tipo').value='Desktop';
   document.getElementById('f-estado').value='Bueno';
   document.getElementById('f-precio').value='';
 }
 function fillForm(e){
-  var map={'area':e.area,'plaza':e.plaza,'nombre':e.nombre,'ubicacion':e.ubicacion,'usuario':e.usuario,'marca':e.marca,'modelo':e.modelo,'serie':e.serie,'cpu':e.cpu,'ram':e.ram,'hdd-marca':e.hdd_marca,'hdd-serie':e.hdd_serie,'ssd-marca':e.ssd_marca,'ssd-serie':e.ssd_serie,'ip':e.ip,'mac-eth':e.mac_eth,'mac-wifi':e.mac_wifi,'so':e.so,'lic-win':e.lic_win,'pass':e.pass,'pass-vpn':e.pass_vpn,'pass2':e.pass2,'fecha':e.fecha,'garantia':e.garantia,'proveedor':e.proveedor,'factura':e.factura,'obs':e.obs};
-  Object.keys(map).forEach(function(k){ var el=document.getElementById('f-'+k); if(el) el.value=map[k]||''; });
+  var m={'area':e.area,'plaza':e.plaza,'nombre':e.nombre,'ubicacion':e.ubicacion,'usuario':e.usuario,'responsable':e.responsable,'puesto':e.puesto,'depto':e.depto,'marca':e.marca,'modelo':e.modelo,'serie':e.serie,'cpu':e.cpu,'ram':e.ram,'hdd-marca':e.hdd_marca,'hdd-serie':e.hdd_serie,'ssd-marca':e.ssd_marca,'ssd-serie':e.ssd_serie,'ip':e.ip,'mac-eth':e.mac_eth,'mac-wifi':e.mac_wifi,'so':e.so,'lic-win':e.lic_win,'pass':e.pass,'pass-vpn':e.pass_vpn,'af':e.af,'fecha':e.fecha,'garantia':e.garantia,'proveedor':e.proveedor,'factura':e.factura,'obs':e.obs};
+  Object.keys(m).forEach(function(k){var el=document.getElementById('f-'+k);if(el)el.value=m[k]||'';});
   document.getElementById('f-tipo').value=e.tipo||'Desktop';
   document.getElementById('f-estado').value=e.estado||'Bueno';
   document.getElementById('f-precio').value=e.precio||'';
 }
 function getFormValues(){
-  return {
-    id:editingId||uid(),
-    area:document.getElementById('f-area').value.trim(),
-    plaza:document.getElementById('f-plaza').value.trim(),
-    tipo:document.getElementById('f-tipo').value,
-    marca:document.getElementById('f-marca').value.trim(),
-    modelo:document.getElementById('f-modelo').value.trim(),
-    nombre:document.getElementById('f-nombre').value.trim(),
-    ubicacion:document.getElementById('f-ubicacion').value.trim(),
-    usuario:document.getElementById('f-usuario').value.trim(),
-    serie:document.getElementById('f-serie').value.trim(),
-    cpu:document.getElementById('f-cpu').value.trim(),
-    ram:document.getElementById('f-ram').value.trim(),
-    hdd_marca:document.getElementById('f-hdd-marca').value.trim(),
-    hdd_serie:document.getElementById('f-hdd-serie').value.trim(),
-    ssd_marca:document.getElementById('f-ssd-marca').value.trim(),
-    ssd_serie:document.getElementById('f-ssd-serie').value.trim(),
-    ip:document.getElementById('f-ip').value.trim(),
-    mac_eth:document.getElementById('f-mac-eth').value.trim(),
-    mac_wifi:document.getElementById('f-mac-wifi').value.trim(),
-    so:document.getElementById('f-so').value.trim(),
-    lic_win:document.getElementById('f-lic-win').value.trim(),
-    pass:document.getElementById('f-pass').value.trim(),
-    pass_vpn:document.getElementById('f-pass-vpn').value.trim(),
-    pass2:document.getElementById('f-pass2').value.trim(),
-    fecha:document.getElementById('f-fecha').value,
-    garantia:document.getElementById('f-garantia').value.trim(),
-    proveedor:document.getElementById('f-proveedor').value.trim(),
-    precio:parseFloat(document.getElementById('f-precio').value)||0,
-    factura:document.getElementById('f-factura').value.trim(),
-    estado:document.getElementById('f-estado').value,
-    obs:document.getElementById('f-obs').value.trim(),
-    updBy:curUser?curUser.name:'',
-    updTs:nowStr()
-  };
+  return {id:editingId||uid(),area:document.getElementById('f-area').value.trim(),plaza:document.getElementById('f-plaza').value.trim(),tipo:document.getElementById('f-tipo').value,marca:document.getElementById('f-marca').value.trim(),modelo:document.getElementById('f-modelo').value.trim(),nombre:document.getElementById('f-nombre').value.trim(),ubicacion:document.getElementById('f-ubicacion').value.trim(),usuario:document.getElementById('f-usuario').value.trim(),responsable:document.getElementById('f-responsable').value.trim(),puesto:document.getElementById('f-puesto').value.trim(),depto:document.getElementById('f-depto').value.trim(),serie:document.getElementById('f-serie').value.trim(),cpu:document.getElementById('f-cpu').value.trim(),ram:document.getElementById('f-ram').value.trim(),hdd_marca:document.getElementById('f-hdd-marca').value.trim(),hdd_serie:document.getElementById('f-hdd-serie').value.trim(),ssd_marca:document.getElementById('f-ssd-marca').value.trim(),ssd_serie:document.getElementById('f-ssd-serie').value.trim(),ip:document.getElementById('f-ip').value.trim(),mac_eth:document.getElementById('f-mac-eth').value.trim(),mac_wifi:document.getElementById('f-mac-wifi').value.trim(),so:document.getElementById('f-so').value.trim(),lic_win:document.getElementById('f-lic-win').value.trim(),pass:document.getElementById('f-pass').value.trim(),pass_vpn:document.getElementById('f-pass-vpn').value.trim(),af:document.getElementById('f-af').value.trim(),fecha:document.getElementById('f-fecha').value,garantia:document.getElementById('f-garantia').value.trim(),proveedor:document.getElementById('f-proveedor').value.trim(),precio:parseFloat(document.getElementById('f-precio').value)||0,factura:document.getElementById('f-factura').value.trim(),estado:document.getElementById('f-estado').value,obs:document.getElementById('f-obs').value.trim(),updBy:curUser?curUser.name:'',updTs:nowStr()};
 }
-function saveEquipo(){
-  var e=getFormValues();
-  if(!e.area||!e.marca||!e.modelo){ alert('Área, Marca y Modelo son obligatorios.'); return; }
-  fbSave(e);
-  closeFormEquipo();
-  toast(editingId?'✅ Equipo actualizado':'✅ Equipo guardado');
-}
-function deleteEquipo(id){
-  var e=equipos.find(function(x){ return x.id===id; }); if(!e) return;
-  confirmAction('¿Eliminar equipo?',e.marca+' '+e.modelo+' ('+e.id+')',function(){
-    db.collection('equipos').doc(id).delete().then(function(){ closePanel(); toast('Equipo eliminado'); });
-  });
-}
+function saveEquipo(){var e=getFormValues();if(!e.area||!e.marca||!e.modelo){alert('Área, Marca y Modelo son obligatorios.');return;}fbSave(e);closeFormEquipo();toast(editingId?'✅ Equipo actualizado':'✅ Equipo guardado');}
+function deleteEquipo(id){var e=equipos.find(function(x){return x.id===id;});if(!e)return;confirmAction('¿Eliminar equipo?',e.marca+' '+e.modelo+' ('+e.id+')',function(){db.collection('equipos').doc(id).delete().then(function(){closePanel();toast('Equipo eliminado');});});}
 
-// ═══════════════════════════════════
 // DETAIL PANEL
-// ═══════════════════════════════════
 function openPanel(id){
-  var e=equipos.find(function(x){ return x.id===id; }); if(!e) return;
+  var e=equipos.find(function(x){return x.id===id;});if(!e)return;
   openEquipoId=id;
   document.getElementById('dp-title').textContent=(e.nombre||e.modelo)+' — '+e.marca;
-  document.getElementById('dp-sub').innerHTML=tipoPill(e.tipo)+' &nbsp;'+estadoPill(e.estado)+' &nbsp;<span style="font-size:11px;color:#9aa0a6;">'+e.id+'</span>';
+  document.getElementById('dp-sub').innerHTML=tipoPill(e.tipo)+'&nbsp;'+estadoPill(e.estado)+'&nbsp;<span style="font-size:11px;color:#9aa0a6;font-family:monospace;">'+e.id+'</span>';
   dpTab(dpCurTab);
   document.getElementById('dp').classList.add('open');
   document.getElementById('dp-overlay').classList.add('on');
 }
-function closePanel(){
-  document.getElementById('dp').classList.remove('open');
-  document.getElementById('dp-overlay').classList.remove('on');
-  openEquipoId=null;
-}
-function editFromPanel(){ closePanel(); if(openEquipoId||true) editEquipo(openEquipoId); }
-function deleteFromPanel(){ deleteEquipo(openEquipoId); }
+function closePanel(){document.getElementById('dp').classList.remove('open');document.getElementById('dp-overlay').classList.remove('on');openEquipoId=null;}
+function editFromPanel(){var id=openEquipoId;closePanel();editEquipo(id);}
+function deleteFromPanel(){deleteEquipo(openEquipoId);}
 
 function dpTab(tab){
   dpCurTab=tab;
-  ['info','red','compra','historial'].forEach(function(x){ document.getElementById('dpt-'+x).classList.toggle('on',x===tab); });
-  var e=equipos.find(function(x){ return x.id===openEquipoId; }); if(!e) return;
+  ['info','red','compra','historial'].forEach(function(x){document.getElementById('dpt-'+x).classList.toggle('on',x===tab);});
+  var e=equipos.find(function(x){return x.id===openEquipoId;});if(!e)return;
   var body=document.getElementById('dp-body');
+  var reps=reparaciones.filter(function(r){return r.equipo_id===openEquipoId;});
   if(tab==='info'){
     body.innerHTML=
-      '<div class="dp-sec-t">Identificación</div>'+
-      row('Área',e.area)+row('Plaza',e.plaza)+row('Ubicación',e.ubicacion)+row('Nombre equipo',e.nombre)+row('Usuario de red',e.usuario)+
-      '<div class="dp-sec-t">Hardware</div>'+
-      row('Tipo',tipoPill(e.tipo))+row('Marca',e.marca)+row('Modelo',e.modelo)+row('N° de serie',e.serie)+
-      row('Procesador',e.cpu)+row('RAM',e.ram)+
-      '<div class="dp-sec-t">Almacenamiento</div>'+
-      row('HDD Marca',e.hdd_marca)+row('HDD Serie',e.hdd_serie)+
-      row('SSD Marca',e.ssd_marca)+row('SSD Serie',e.ssd_serie)+
-      '<div class="dp-sec-t">Software</div>'+
-      row('Sistema Operativo',e.so)+row('Licencia Windows',e.lic_win)+
-      '<div class="dp-sec-t">Estado</div>'+
-      row('Estado físico',estadoPill(e.estado))+row('Observaciones',e.obs)+
-      (e.updBy?'<div style="font-size:11px;color:#9aa0a6;margin-top:14px;">Última modificación: '+e.updBy+' — '+e.updTs+'</div>':'');
+      '<div class="dp-sec-t">Identificación</div>'
+      +row('Área',e.area)+row('Plaza',e.plaza)+row('Ubicación',e.ubicacion)
+      +row('Nombre equipo',e.nombre)+row('Responsable',e.responsable)
+      +row('Puesto',e.puesto)+row('Departamento',e.depto)
+      +row('Usuario de red',e.usuario)+row('AF',e.af)
+      +'<div class="dp-sec-t">Hardware</div>'
+      +row('Tipo',tipoPill(e.tipo))+row('Marca',e.marca)+row('Modelo',e.modelo)
+      +row('N° de serie',e.serie)+row('Procesador',e.cpu)+row('RAM',e.ram)
+      +'<div class="dp-sec-t">Almacenamiento</div>'
+      +row('HDD Marca',e.hdd_marca)+row('HDD Serie',e.hdd_serie)
+      +row('SSD Marca',e.ssd_marca)+row('SSD Serie',e.ssd_serie)
+      +'<div class="dp-sec-t">Software</div>'
+      +row('Sistema Operativo',e.so)+row('Licencia Windows',e.lic_win)
+      +'<div class="dp-sec-t">Estado físico</div>'
+      +row('Estado',estadoPill(e.estado))+row('Observaciones',e.obs)
+      +(e.updBy?'<div style="font-size:11px;color:#9aa0a6;margin-top:14px;padding-top:10px;border-top:1px solid #f0f2f5;">Última modificación: <b>'+e.updBy+'</b> — '+e.updTs+'</div>':'')
+      +'<div style="margin-top:14px;display:flex;gap:6px;">'
+      +'<button class="btn btn-blue btn-sm" onclick="openFormRepFor(\''+e.id+'\')">🔧 Registrar reparación</button>'
+      +'<button class="btn btn-sm" onclick="printFicha()">🖨 Imprimir ficha</button>'
+      +'</div>';
   } else if(tab==='red'){
     body.innerHTML=
-      '<div class="dp-sec-t">Configuración de red</div>'+
-      row('Dirección IP',e.ip)+row('MAC Ethernet','<code style="font-size:12px;">'+( e.mac_eth||'—')+'</code>')+
-      row('MAC WiFi','<code style="font-size:12px;">'+( e.mac_wifi||'—')+'</code>')+
-      '<div class="dp-sec-t">Accesos (protegidos)</div>'+
-      row('Usuario red',e.usuario)+
-      row('Password red',e.pass?'<span style="letter-spacing:3px;font-size:14px;">••••••</span>&nbsp;<button class="icon-btn" onclick="togglePass(\'pass-val\',\''+encodeURIComponent(e.pass||'')+'\')">👁</button><span id="pass-val" style="display:none;font-size:12px;font-family:monospace;margin-left:8px;"></span>':'—')+
-      row('Password VPN',e.pass_vpn?'<span style="letter-spacing:3px;font-size:14px;">••••••</span>&nbsp;<button class="icon-btn" onclick="togglePass(\'vpn-val\',\''+encodeURIComponent(e.pass_vpn||'')+'\')">👁</button><span id="vpn-val" style="display:none;font-size:12px;font-family:monospace;margin-left:8px;"></span>':'—');
+      '<div class="dp-sec-t">Configuración de red</div>'
+      +row('Dirección IP',e.ip)
+      +row('MAC Ethernet','<code style="font-size:12px;background:#f0f2f5;padding:2px 6px;border-radius:4px;">'+(e.mac_eth||'—')+'</code>')
+      +row('MAC WiFi','<code style="font-size:12px;background:#f0f2f5;padding:2px 6px;border-radius:4px;">'+(e.mac_wifi||'—')+'</code>')
+      +'<div class="dp-sec-t">Accesos</div>'
+      +row('Usuario red',e.usuario)
+      +row('Password red',e.pass?'<span style="letter-spacing:3px;">••••••</span>&nbsp;<button class="icon-btn" onclick="togglePass(\'pv\',\''+encodeURIComponent(e.pass||'')+'\')">👁</button><span id="pv" style="display:none;font-size:12px;font-family:monospace;margin-left:8px;background:#f0f2f5;padding:2px 6px;border-radius:4px;"></span>':'—')
+      +row('Password VPN',e.pass_vpn?'<span style="letter-spacing:3px;">••••••</span>&nbsp;<button class="icon-btn" onclick="togglePass(\'vpnv\',\''+encodeURIComponent(e.pass_vpn||'')+'\')">👁</button><span id="vpnv" style="display:none;font-size:12px;font-family:monospace;margin-left:8px;background:#f0f2f5;padding:2px 6px;border-radius:4px;"></span>':'—');
   } else if(tab==='compra'){
-    var reps=reparaciones.filter(function(r){ return r.equipo_id===openEquipoId; });
-    var totalRep=reps.reduce(function(a,r){ return a+( parseFloat(r.costo)||0); },0);
+    var totalRep=reps.reduce(function(a,r){return a+(parseFloat(r.costo)||0);},0);
     body.innerHTML=
-      '<div class="dp-sec-t">Datos de adquisición</div>'+
-      row('Fecha de compra',e.fecha||'—')+row('Garantía',e.garantia)+row('Proveedor',e.proveedor)+
-      row('Precio',fmt$(e.precio))+row('Factura',e.factura)+
-      '<div class="dp-sec-t">Historial de reparaciones ('+reps.length+')</div>'+
-      (reps.length?
-        row('Total invertido en reparaciones',fmt$(totalRep))+
-        reps.map(function(r){
-          return '<div style="background:#f7f8ff;border:1px solid #e0e2e6;border-radius:8px;padding:10px 12px;margin-bottom:8px;">'
+      '<div class="dp-sec-t">Adquisición</div>'
+      +row('Fecha de compra',e.fecha||'—')+row('Garantía',e.garantia)
+      +row('Proveedor',e.proveedor)+row('Precio',fmt$(e.precio))+row('Factura',e.factura)
+      +'<div class="dp-sec-t">Reparaciones ('+reps.length+')</div>'
+      +(reps.length?row('Total invertido',fmt$(totalRep))
+        +reps.map(function(r){
+          return '<div style="background:#f7f9ff;border:1px solid #e8eaed;border-radius:10px;padding:10px 14px;margin-bottom:8px;">'
             +'<div style="display:flex;justify-content:space-between;margin-bottom:4px;">'
             +'<b style="font-size:12px;">'+r.falla+'</b><span style="font-size:11px;color:#9aa0a6;">'+r.fecha+'</span></div>'
-            +'<div style="font-size:12px;color:#5f6368;">'+( r.desc||'')+'</div>'
-            +(r.tecnico?'<div style="font-size:11px;margin-top:4px;color:#9aa0a6;">Técnico: '+r.tecnico+'</div>':'')
-            +(r.costo?'<div style="font-size:12px;font-weight:600;color:#1a73e8;margin-top:4px;">Costo: '+fmt$(r.costo)+'</div>':'')
+            +'<div style="font-size:12px;color:#5f6368;">'+(r.desc||'')+'</div>'
+            +(r.tecnico?'<div style="font-size:11px;margin-top:4px;color:#9aa0a6;">Técnico: <b>'+r.tecnico+'</b></div>':'')
+            +(r.costo?'<div style="font-size:12px;font-weight:700;color:#1a73e8;margin-top:4px;">'+fmt$(r.costo)+'</div>':'')
             +'</div>';
-        }).join(''):
-        '<div style="font-size:12px;color:#9aa0a6;padding:8px 0;">Sin reparaciones registradas.</div>'+
-        '<button class="btn btn-sm" onclick="openFormRepFor(\''+openEquipoId+'\')">+ Registrar reparación</button>'
+        }).join('')
+        :'<div style="font-size:12px;color:#9aa0a6;padding:8px 0;">Sin reparaciones registradas.</div>'
       );
   } else if(tab==='historial'){
-    body.innerHTML='<div style="font-size:12px;color:#9aa0a6;padding:16px 0;text-align:center;">Historial de cambios en desarrollo.</div>';
+    body.innerHTML='<div style="font-size:12px;color:#9aa0a6;padding:20px 0;text-align:center;">Historial de cambios próximamente.</div>';
   }
 }
-function row(k,v){ return '<div class="dp-row"><div class="dp-key">'+k+'</div><div class="dp-val">'+(v||'—')+'</div></div>'; }
-function togglePass(spanId, encoded){
-  var s=document.getElementById(spanId); if(!s) return;
-  if(s.style.display==='none'){ s.textContent=decodeURIComponent(encoded); s.style.display='inline'; }
-  else s.style.display='none';
+function togglePass(sid,enc){var s=document.getElementById(sid);if(!s)return;if(s.style.display==='none'){s.textContent=decodeURIComponent(enc);s.style.display='inline';}else s.style.display='none';}
+
+// FICHA IMPRIMIBLE (al escanear QR)
+function buildFicha(id){
+  var e=equipos.find(function(x){return x.id===id;});if(!e)return '';
+  var reps=reparaciones.filter(function(r){return r.equipo_id===id;});
+  var totalRep=reps.reduce(function(a,r){return a+(parseFloat(r.costo)||0);},0);
+  var qrUrl='https://api.qrserver.com/v1/create-qr-code/?size=100x100&data='+encodeURIComponent('https://robertoamayar.github.io/inventario-cafiver/#'+e.id)+'&color=1a73e8';
+  return '<div class="ficha-header">'
+    +'<img src="'+qrUrl+'" width="90" height="90" style="border-radius:6px;flex-shrink:0;">'
+    +'<div style="flex:1;">'
+    +'<div style="font-size:20px;font-weight:700;color:#1c1e21;margin-bottom:2px;">'+(e.nombre||e.modelo)+'</div>'
+    +'<div style="font-size:13px;color:#5f6368;margin-bottom:4px;">'+e.marca+' '+e.modelo+' · '+e.tipo+'</div>'
+    +'<div style="font-size:11px;color:#1a73e8;font-weight:700;">'+e.id+' · '+e.plaza+' · '+e.area+'</div>'
+    +'<div style="margin-top:6px;display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:'+(e.estado==='Bueno'?'#e6f4ea':e.estado==='Regular'?'#fff8e1':e.estado==='Malo'?'#fce8e6':'#f0f2f5')+';color:'+(e.estado==='Bueno'?'#2e7d32':e.estado==='Regular'?'#f57f17':e.estado==='Malo'?'#c62828':'#9aa0a6')+';border:1px solid currentColor;">'+e.estado+'</div>'
+    +'</div></div>'
+    +'<div class="ficha-secciones">'
+    +'<div class="ficha-sec"><div class="ficha-sec-title">Identificación</div><div class="ficha-grid">'
+    +frow('Responsable',e.responsable)+frow('Puesto',e.puesto)+frow('Departamento',e.depto)+frow('Ubicación',e.ubicacion)+frow('Usuario de red',e.usuario)+frow('AF',e.af)
+    +'</div></div>'
+    +'<div class="ficha-sec"><div class="ficha-sec-title">Hardware</div><div class="ficha-grid">'
+    +frow('Procesador',e.cpu)+frow('RAM',e.ram)+frow('N° de serie',e.serie)+frow('HDD',e.hdd_marca)+frow('HDD Serie',e.hdd_serie)+frow('SSD',e.ssd_marca)+frow('SSD Serie',e.ssd_serie)
+    +'</div></div>'
+    +'<div class="ficha-sec"><div class="ficha-sec-title">Red y Software</div><div class="ficha-grid">'
+    +frow('IP',e.ip)+frow('MAC Ethernet',e.mac_eth)+frow('MAC WiFi',e.mac_wifi)+frow('S.O.',e.so)
+    +'</div></div>'
+    +'<div class="ficha-sec"><div class="ficha-sec-title">Compra</div><div class="ficha-grid">'
+    +frow('Fecha compra',e.fecha)+frow('Garantía',e.garantia)+frow('Proveedor',e.proveedor)+frow('Precio',fmt$(e.precio))+frow('Factura',e.factura)
+    +'</div></div>'
+    +(reps.length?'<div class="ficha-sec"><div class="ficha-sec-title">Historial de reparaciones ('+reps.length+') · Total: '+fmt$(totalRep)+'</div>'
+    +reps.map(function(r){return '<div class="rep-hist-item"><b>'+r.fecha+'</b> — '+r.falla+(r.tecnico?' | Téc: '+r.tecnico:'')+(r.costo?' | '+fmt$(r.costo):'')+(r.desc?'<br><span style="font-size:10px;color:#5f6368;">'+r.desc+'</span>':'')+'</div>';}).join('')
+    +'</div>':'')
+    +(e.obs?'<div class="ficha-sec"><div class="ficha-sec-title">Observaciones</div><div style="font-size:11px;">'+e.obs+'</div></div>':'')
+    +'<div style="margin-top:10px;font-size:9px;color:#9aa0a6;text-align:right;">Generado el '+new Date().toLocaleDateString('es-MX')+' · APP CAFIVER</div>'
+    +'</div>';
+}
+function frow(k,v){return '<div class="ficha-row"><div class="ficha-k">'+k+'</div><div class="ficha-v">'+(v||'—')+'</div></div>';}
+function printFicha(){if(openEquipoId)printFichaId(openEquipoId);}
+function printFichaId(id){
+  document.getElementById('ficha-print').innerHTML=buildFicha(id);
+  window.print();
 }
 
-// ═══════════════════════════════════
 // QR
-// ═══════════════════════════════════
-function makeQRSvg(text, size){
-  // QR via Google Charts API — confiable, sin dependencias
+function makeQR(text,size){
   var url='https://api.qrserver.com/v1/create-qr-code/?size='+size+'x'+size+'&data='+encodeURIComponent(text)+'&color=1a73e8&bgcolor=ffffff&margin=4';
-  return '<img src="'+url+'" width="'+size+'" height="'+size+'" style="display:block;border-radius:4px;" loading="lazy">';
+  return '<img src="'+url+'" width="'+size+'" height="'+size+'" style="display:block;border-radius:6px;" loading="lazy">';
 }
-
 function renderQR(){
-  var w=document.getElementById('view-qr'); if(!w) return;
+  var w=document.getElementById('view-qr');if(!w)return;
   var q=document.getElementById('qr-search')?document.getElementById('qr-search').value.toLowerCase():'';
-  var data=q?equipos.filter(function(e){ return (e.nombre+e.modelo+e.plaza+e.marca+e.id).toLowerCase().includes(q); }):equipos;
+  var areas2=[]; equipos.forEach(function(e){if(areas2.indexOf(e.area)<0&&e.area)areas2.push(e.area);}); areas2.sort();
+  var filterArea=document.getElementById('qr-area-filter')?document.getElementById('qr-area-filter').value:'';
+  var data=equipos.filter(function(e){
+    if(q&&!(e.nombre+e.modelo+e.plaza+e.marca+e.id).toLowerCase().includes(q))return false;
+    if(filterArea&&e.area!==filterArea)return false;
+    return true;
+  });
   w.innerHTML=
-    '<div style="padding:14px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #e0e2e6;background:#fff;flex-wrap:wrap;">'
-    +'<input class="fi-sm" type="text" id="qr-search" placeholder="Filtrar por nombre, plaza, modelo..." style="width:240px;" oninput="renderQR()" value="'+(q||'')+'">'
+    '<div class="qr-toolbar">'
+    +'<input class="fi-sm" type="text" id="qr-search" placeholder="🔍 Buscar equipos..." style="width:220px;" oninput="renderQR()" value="'+(q||'')+'">'
+    +'<select class="fi-sm" id="qr-area-filter" onchange="renderQR()">'
+    +'<option value="">Todas las áreas</option>'
+    +areas2.map(function(a){return '<option value="'+a+'"'+(filterArea===a?' selected':'')+'>'+a+'</option>';}).join('')
+    +'</select>'
     +'<span style="font-size:12px;color:#9aa0a6;">'+data.length+' equipo(s)</span>'
-    +'<button class="btn btn-sm" onclick="window.print()">🖨 Imprimir</button>'
+    +'<button class="btn btn-sm" onclick="window.print()">🖨 Imprimir todos</button>'
     +'</div>'
-    +'<div class="qr-grid" id="qr-grid">'
+    +'<div class="qr-grid">'
     +data.map(function(e){
-      var qrText='https://robertoamayar.github.io/inventario-cafiver/#'+e.id;
+      var qrUrl='https://robertoamayar.github.io/inventario-cafiver/#'+e.id;
       return '<div class="qr-card">'
-        +makeQRSvg(qrText,150)
-        +'<div class="qr-lbl">'+e.id+'</div>'
-        +'<div class="qr-sub">'+(e.nombre||e.modelo)+'</div>'
-        +'<div class="qr-sub">'+e.marca+' '+e.tipo+' · '+e.plaza+'</div>'
-        +'<button class="btn btn-sm" style="width:100%;justify-content:center;" onclick="openPanel(\''+e.id+'\')">Ver detalle</button>'
+        +makeQR(qrUrl,150)
+        +'<div class="qr-id">'+e.id+'</div>'
+        +'<div class="qr-lbl">'+(e.nombre||e.modelo)+'</div>'
+        +'<div class="qr-sub">'+e.marca+' '+e.tipo+'</div>'
+        +'<div class="qr-sub">'+e.plaza+'</div>'
+        +'<div style="display:flex;gap:4px;width:100%;">'
+        +'<button class="btn btn-sm" style="flex:1;justify-content:center;" onclick="openPanel(\''+e.id+'\')">👁 Ver</button>'
+        +'<button class="btn btn-sm" style="flex:1;justify-content:center;" onclick="printFichaId(\''+e.id+'\')">🖨</button>'
+        +'</div>'
         +'</div>';
     }).join('')
     +'</div>';
 }
 
-// ═══════════════════════════════════
 // REPARACIONES
-// ═══════════════════════════════════
 function openFormRepFor(equipoId){
   closePanel();
   var sel=document.getElementById('rep-equipo-sel');
-  sel.innerHTML=equipos.map(function(e){ return '<option value="'+e.id+'"'+(e.id===equipoId?' selected':'')+'>'+e.id+' — '+(e.nombre||e.modelo)+' ('+e.plaza+')</option>'; }).join('');
+  sel.innerHTML=equipos.map(function(e){return '<option value="'+e.id+'"'+(e.id===equipoId?' selected':'')+'>'+e.id+' — '+(e.nombre||e.modelo)+' ('+e.plaza+')</option>';}).join('');
   document.getElementById('rep-fecha').value=new Date().toISOString().slice(0,10);
-  ['rep-tecnico','rep-falla','rep-desc'].forEach(function(id){ document.getElementById(id).value=''; });
+  ['rep-tecnico','rep-falla','rep-desc'].forEach(function(id){document.getElementById(id).value='';});
   document.getElementById('rep-costo').value='';
   document.getElementById('rep-estado').value='Bueno';
-  document.getElementById('rep-modal-title').textContent='Nueva reparación';
   document.getElementById('overlay-rep').style.display='flex';
 }
-function closeFormRep(){ document.getElementById('overlay-rep').style.display='none'; }
+function closeFormRep(){document.getElementById('overlay-rep').style.display='none';}
 function saveReparacion(){
   var eqId=document.getElementById('rep-equipo-sel').value;
-  var eq=equipos.find(function(e){ return e.id===eqId; }); if(!eq) return;
-  var rep={
-    id:'R'+Date.now().toString(36).toUpperCase(),
-    equipo_id:eqId,
-    equipo_nombre:(eq.nombre||eq.modelo)+' ('+eq.plaza+')',
-    fecha:document.getElementById('rep-fecha').value,
-    tecnico:document.getElementById('rep-tecnico').value.trim(),
-    falla:document.getElementById('rep-falla').value.trim(),
-    costo:parseFloat(document.getElementById('rep-costo').value)||0,
-    estado_result:document.getElementById('rep-estado').value,
-    desc:document.getElementById('rep-desc').value.trim(),
-    registradoPor:curUser?curUser.name:'',
-    ts:nowStr()
-  };
+  var eq=equipos.find(function(e){return e.id===eqId;});if(!eq)return;
+  var rep={id:'R'+Date.now().toString(36).toUpperCase(),equipo_id:eqId,equipo_nombre:(eq.nombre||eq.modelo)+' ('+eq.plaza+')',fecha:document.getElementById('rep-fecha').value,tecnico:document.getElementById('rep-tecnico').value.trim(),falla:document.getElementById('rep-falla').value.trim(),costo:parseFloat(document.getElementById('rep-costo').value)||0,estado_result:document.getElementById('rep-estado').value,desc:document.getElementById('rep-desc').value.trim(),registradoPor:curUser?curUser.name:'',ts:nowStr()};
   db.collection('reparaciones').doc(rep.id).set(rep);
-  // Actualizar estado del equipo
-  eq.estado=rep.estado_result; eq.updBy=curUser?curUser.name:''; eq.updTs=nowStr();
-  fbSave(eq);
-  closeFormRep();
-  toast('✅ Reparación registrada');
+  eq.estado=rep.estado_result;eq.updBy=curUser?curUser.name:'';eq.updTs=nowStr();
+  fbSave(eq);closeFormRep();toast('✅ Reparación registrada');
 }
 function renderReparaciones(){
-  var w=document.getElementById('view-reparaciones'); if(!w) return;
+  var w=document.getElementById('view-reparaciones');if(!w)return;
   var q=document.getElementById('rep-filter-q')?document.getElementById('rep-filter-q').value.toLowerCase():'';
-  var data=q?reparaciones.filter(function(r){ return (r.equipo_nombre+r.falla+r.tecnico).toLowerCase().includes(q); }):reparaciones;
-  var totalCosto=data.reduce(function(a,r){ return a+(parseFloat(r.costo)||0); },0);
+  var data=q?reparaciones.filter(function(r){return (r.equipo_nombre+r.falla+r.tecnico).toLowerCase().includes(q);}):reparaciones;
+  var totalCosto=data.reduce(function(a,r){return a+(parseFloat(r.costo)||0);},0);
   w.innerHTML=
-    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">'
-    +'<h2 style="font-size:16px;font-weight:700;">Reparaciones <span style="font-size:13px;color:#9aa0a6;font-weight:400;">('+data.length+')</span></h2>'
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">'
+    +'<div><div class="dash-title">Reparaciones</div><div class="dash-sub">'+data.length+' registro(s)</div></div>'
     +'<div style="display:flex;gap:8px;align-items:center;">'
-    +'<input class="fi-sm" type="text" id="rep-filter-q" placeholder="Buscar..." style="width:180px;" oninput="renderReparaciones()">'
+    +'<input class="fi-sm" type="text" id="rep-filter-q" placeholder="🔍 Buscar..." style="width:190px;" oninput="renderReparaciones()">'
     +'<button class="btn btn-blue btn-sm" onclick="openFormRepFor(\'\')">+ Nueva</button>'
     +'</div></div>'
-    +(data.length?
-      '<div style="background:#e8f0fe;border:1px solid #b8d0f5;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:12px;display:flex;gap:20px;">'
-      +'<span>Total registros: <b>'+data.length+'</b></span>'
-      +'<span>Total invertido: <b>'+fmt$(totalCosto)+'</b></span>'
-      +'</div>':'')+
-    data.slice().reverse().map(function(r){
-      var sc=r.estado_result==='Bueno'?'#34a853':r.estado_result==='Regular'?'#f9ab00':r.estado_result==='Malo'?'#ea4335':'#9aa0a6';
+    +(data.length?'<div style="background:#e8f0fe;border:1px solid #b8d0f5;border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:12px;display:flex;gap:24px;">'
+    +'<span>Registros: <b>'+data.length+'</b></span><span>Total invertido: <b style="color:#1a73e8;">'+fmt$(totalCosto)+'</b></span></div>':'')
+    +data.slice().reverse().map(function(r){
+      var sc=r.estado_result==='Bueno'?'#2e7d32':r.estado_result==='Regular'?'#f57f17':r.estado_result==='Malo'?'#c62828':'#9aa0a6';
       return '<div class="rep-card">'
-        +'<div class="rep-hd">'
-        +'<div><div class="rep-title">🔧 '+r.equipo_nombre+'</div><div class="rep-meta">'+(r.falla||'Sin descripción de falla')+' &nbsp;·&nbsp; '+r.fecha+'</div></div>'
-        +'<div style="text-align:right;">'
+        +'<div class="rep-hd"><div>'
+        +'<div class="rep-title">🔧 '+r.equipo_nombre+'</div>'
+        +'<div class="rep-meta">'+(r.falla||'Sin descripción')+' &nbsp;·&nbsp; '+r.fecha+'</div>'
+        +'</div><div style="text-align:right;">'
         +(r.costo?'<div style="font-weight:700;color:#1a73e8;font-size:13px;">'+fmt$(r.costo)+'</div>':'')
         +'<span class="pill" style="background:'+sc+'22;color:'+sc+';">'+r.estado_result+'</span>'
         +'</div></div>'
-        +(r.desc?'<div style="font-size:12px;color:#5f6368;margin-top:4px;">'+r.desc+'</div>':'')
+        +(r.desc?'<div style="font-size:12px;color:#5f6368;margin-top:6px;">'+r.desc+'</div>':'')
         +(r.tecnico?'<div style="font-size:11px;margin-top:4px;color:#9aa0a6;">Técnico: <b>'+r.tecnico+'</b></div>':'')
-        +(r.registradoPor?'<div style="font-size:11px;color:#9aa0a6;">Registró: '+r.registradoPor+'</div>':'')
         +'</div>';
-    }).join('')+
-    (!data.length?'<div class="empty-state" style="background:#fff;border:1px solid #e0e2e6;border-radius:12px;padding:2rem;">Sin reparaciones registradas.</div>':'');
+    }).join('')
+    +(!data.length?'<div class="tbl-box"><div class="empty-state">Sin reparaciones registradas.</div></div>':'');
 }
 
-// ═══════════════════════════════════
 // EXPORT CSV
-// ═══════════════════════════════════
 function exportCSV(){
-  var headers=['ID','Área','Plaza','Tipo','Marca','Modelo','Nombre','Ubicación','Usuario','Serie','Procesador','RAM','HDD Marca','HDD Serie','SSD Marca','SSD Serie','IP','MAC Eth','MAC WiFi','SO','Licencia Win','Fecha Compra','Garantía','Proveedor','Precio','Factura','Estado','Observaciones'];
-  var rows=equipos.map(function(e){ return [e.id,e.area,e.plaza,e.tipo,e.marca,e.modelo,e.nombre,e.ubicacion,e.usuario,e.serie,e.cpu,e.ram,e.hdd_marca,e.hdd_serie,e.ssd_marca,e.ssd_serie,e.ip,e.mac_eth,e.mac_wifi,e.so,e.lic_win,e.fecha,e.garantia,e.proveedor,e.precio,e.factura,e.estado,e.obs].map(function(v){ return '"'+(v||'').toString().replace(/"/g,'""')+'"'; }).join(','); });
-  var csv='\uFEFF'+headers.join(',')+'\n'+rows.join('\n');
-  var a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'})); a.download='inventario_cafiver_'+new Date().toISOString().slice(0,10)+'.csv'; a.click(); toast('⬇ CSV exportado');
+  var h=['ID','Área','Plaza','Tipo','Marca','Modelo','Nombre','Responsable','Puesto','Depto','Ubicación','Usuario','Serie','Procesador','RAM','HDD Marca','HDD Serie','SSD Marca','SSD Serie','IP','MAC Eth','MAC WiFi','SO','Licencia Win','AF','Fecha Compra','Garantía','Proveedor','Precio','Factura','Estado','Observaciones'];
+  var rows=equipos.map(function(e){return [e.id,e.area,e.plaza,e.tipo,e.marca,e.modelo,e.nombre,e.responsable,e.puesto,e.depto,e.ubicacion,e.usuario,e.serie,e.cpu,e.ram,e.hdd_marca,e.hdd_serie,e.ssd_marca,e.ssd_serie,e.ip,e.mac_eth,e.mac_wifi,e.so,e.lic_win,e.af,e.fecha,e.garantia,e.proveedor,e.precio,e.factura,e.estado,e.obs].map(function(v){return '"'+(v||'').toString().replace(/"/g,'""')+'"';}).join(',');});
+  var csv='\uFEFF'+h.join(',')+'\n'+rows.join('\n');
+  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='inventario_cafiver_'+new Date().toISOString().slice(0,10)+'.csv';a.click();toast('⬇ CSV exportado');
 }
 
-// ═══════════════════════════════════
 // CHANGE PASSWORD
-// ═══════════════════════════════════
-function openChPass(){ document.getElementById('chpass-new').value=''; document.getElementById('chpass-confirm').value=''; document.getElementById('chpass-error').style.display='none'; document.getElementById('chpass-overlay').classList.remove('hidden'); }
-function closeChPass(){ document.getElementById('chpass-overlay').classList.add('hidden'); }
-function doChPass(){
-  var np=document.getElementById('chpass-new').value, cp=document.getElementById('chpass-confirm').value;
-  var err=document.getElementById('chpass-error'); err.style.display='none';
-  if(!np){ err.textContent='Ingresa la nueva contraseña.'; err.style.display='block'; return; }
-  if(np.length<6){ err.textContent='Mínimo 6 caracteres.'; err.style.display='block'; return; }
-  if(np!==cp){ err.textContent='Las contraseñas no coinciden.'; err.style.display='block'; return; }
-  var user=auth.currentUser; if(!user){ err.textContent='No hay sesión activa.'; err.style.display='block'; return; }
-  user.updatePassword(np)
-    .then(function(){ closeChPass(); toast('✅ Contraseña actualizada'); })
-    .catch(function(e){ err.textContent=e.code==='auth/requires-recent-login'?'Cierra sesión, vuelve a entrar y luego cambia la contraseña.':'Error: '+e.message; err.style.display='block'; });
-}
+function openChPass(){document.getElementById('chpass-new').value='';document.getElementById('chpass-confirm').value='';document.getElementById('chpass-error').style.display='none';document.getElementById('chpass-overlay').classList.remove('hidden');}
+function closeChPass(){document.getElementById('chpass-overlay').classList.add('hidden');}
+function doChPass(){var np=document.getElementById('chpass-new').value,cp=document.getElementById('chpass-confirm').value,err=document.getElementById('chpass-error');err.style.display='none';if(!np){err.textContent='Ingresa la nueva contraseña.';err.style.display='block';return;}if(np.length<6){err.textContent='Mínimo 6 caracteres.';err.style.display='block';return;}if(np!==cp){err.textContent='Las contraseñas no coinciden.';err.style.display='block';return;}var u=auth.currentUser;if(!u){err.textContent='No hay sesión activa.';err.style.display='block';return;}u.updatePassword(np).then(function(){closeChPass();toast('✅ Contraseña actualizada');}).catch(function(e){err.textContent=e.code==='auth/requires-recent-login'?'Cierra sesión, vuelve a entrar y cambia la contraseña.':'Error: '+e.message;err.style.display='block';});}
 
-// ═══════════════════════════════════
 // CONFIRM
-// ═══════════════════════════════════
 var _cb=null;
-function confirmAction(title,msg,cb){ _cb=cb; document.getElementById('confirm-title').textContent=title; document.getElementById('confirm-msg').textContent=msg; document.getElementById('confirm-overlay').classList.remove('hidden'); }
-function closeConfirm(){ document.getElementById('confirm-overlay').classList.add('hidden'); _cb=null; }
-document.getElementById('confirm-ok').addEventListener('click',function(){ if(_cb)_cb(); closeConfirm(); });
+function confirmAction(t,m,cb){_cb=cb;document.getElementById('confirm-title').textContent=t;document.getElementById('confirm-msg').textContent=m;document.getElementById('confirm-overlay').classList.remove('hidden');}
+function closeConfirm(){document.getElementById('confirm-overlay').classList.add('hidden');_cb=null;}
+document.getElementById('confirm-ok').addEventListener('click',function(){if(_cb)_cb();closeConfirm();});
 
-// ═══════════════════════════════════
-// AUTH STATE
-// ═══════════════════════════════════
-// Abrir equipo desde QR (hash en URL)
+// QR HASH
 function checkQRHash(){
-  var hash=window.location.hash.replace("#","").trim();
-  if(hash&&hash.startsWith("EQ")){
-    setTimeout(function(){ openPanel(hash); },1200);
-  }
+  var hash=window.location.hash.replace('#','').trim();
+  if(hash&&hash.startsWith('EQ')){setTimeout(function(){openPanel(hash);},1500);}
 }
 
 auth.onAuthStateChanged(function(user){
