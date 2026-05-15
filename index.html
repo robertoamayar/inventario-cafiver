@@ -659,7 +659,7 @@ function loadAppData(){
   db.collection('transferencias').onSnapshot(function(s){
     transferencias=s.docs.map(function(d){return d.data();});
     if(openEquipoId) dpTab(dpCurTab);
-  });
+  }, function(err){ console.warn('transferencias:', err.message); });
   db.collection('reparaciones').onSnapshot(function(s){
     reparaciones=s.docs.map(function(d){return d.data();});
     if(curView==='reparaciones')renderReparaciones();
@@ -967,7 +967,7 @@ function dpTab(tab){
       +'<div style="font-size:13px;font-weight:700;">'+(e.responsable||'Sin asignar')+'</div>'
       +(e.puesto?'<div style="font-size:11px;color:#5f6368;">'+e.puesto+(e.depto?' · '+e.depto:'')+'</div>':'')
       +'</div>'
-      +'<button class="btn btn-blue btn-sm" onclick="openTransfer(''+openEquipoId+'')">🔄 Transferir</button>'
+      +'<button class="btn btn-blue btn-sm" onclick="openTransfer(\''+openEquipoId+'\')">🔄 Transferir</button>'
       +'</div>'
       +'<div class="dp-sec-t">Historial de asignaciones ('+movs.length+')</div>'
       +(movs.length?
@@ -983,7 +983,7 @@ function dpTab(tab){
             +'</div></div>';
         }).join('')
         :'<div style="font-size:12px;color:#9aa0a6;padding:8px 0;">Sin movimientos registrados.</div>'
-        +'<button class="btn btn-sm" style="margin-top:6px;" onclick="openTransfer(''+openEquipoId+'')">🔄 Registrar primera asignación</button>'
+        +'<button class="btn btn-sm" style="margin-top:6px;" onclick="openTransfer(this.dataset.id)" data-id="'+openEquipoId+'">🔄 Registrar primera asignación</button>'
       );
   }
 }
@@ -1164,7 +1164,8 @@ function isMobile(){ return window.innerWidth <= 768; }
 function renderInventarioCards(data){
   if(!data.length) return '<div class="empty-state">No hay equipos que coincidan</div>';
   return data.map(function(e){
-    return '<div style="background:#fff;border:1px solid #e8eaed;border-radius:14px;padding:14px 16px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.06);" onclick="openPanel(''+e.id+'')">'
+    var eid=e.id;
+  return '<div style="background:#fff;border:1px solid #e8eaed;border-radius:14px;padding:14px 16px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.06);" onclick="openPanel(this.dataset.eid)" data-eid="'+eid+'">'
       +'<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">'
       +'<div style="flex:1;">'
       +'<div style="font-size:14px;font-weight:700;color:#1c1e21;">'+(e.nombre||e.modelo)+'</div>'
@@ -1182,9 +1183,9 @@ function renderInventarioCards(data){
       +(e.so?'<div>🖥 '+e.so+'</div>':'')
       +'</div>'
       +'<div style="display:flex;gap:6px;">'
-      +'<button class="btn btn-sm" style="flex:1;justify-content:center;" onclick="event.stopPropagation();editEquipo(''+e.id+'')">✏️ Editar</button>'
-      +'<button class="btn btn-sm" style="flex:1;justify-content:center;" onclick="event.stopPropagation();openFormRepFor(''+e.id+'')">🔧 Reparación</button>'
-      +'<button class="btn btn-sm" onclick="event.stopPropagation();printFichaId(''+e.id+'')">🖨</button>'
+      +'<button class="btn btn-sm" style="flex:1;justify-content:center;" onclick="event.stopPropagation();editEquipo(this.closest(\"[data-eid]\").dataset.eid)">✏️ Editar</button>'
+      +'<button class="btn btn-sm" style="flex:1;justify-content:center;" onclick="event.stopPropagation();openFormRepFor(this.closest(\"[data-eid]\").dataset.eid)">🔧 Reparación</button>'
+      +'<button class="btn btn-sm" onclick="event.stopPropagation();printFichaId(this.closest(\"[data-eid]\").dataset.eid)">🖨</button>'
       +'</div></div>';
   }).join('');
 }
@@ -1227,7 +1228,7 @@ function saveTransfer(){
     registradoPor:curUser?curUser.name:'',
     ts:nowStr()
   };
-  db.collection('transferencias').doc(mov.id).set(mov);
+  db.collection('transferencias').doc(mov.id).set(mov).catch(function(e){ console.warn('Error guardando transferencia:', e.message); });
   // Actualizar equipo
   e.responsable=nuevoResp;
   e.puesto=document.getElementById('tr-puesto').value.trim();
